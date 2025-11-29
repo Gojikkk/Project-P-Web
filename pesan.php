@@ -16,57 +16,72 @@ if (isset($_POST['pesan'])){
     $tanggal_pesan = date('Y-m-d H:i:s');
 
     $error_massage = "";
-    if (empty($id_makanan) && empty($id_minuman) && empty($jumlah_pesanan)){
-        $error_massage = "Semua data harus diisi";
-    } elseif (!$id_makanan){
-        $error_massage = "ID Makanan tidak boleh kosong";
-    } elseif (!$id_minuman){
-        $error_massage = "ID Minuman tidak boleh kosong";
-    } elseif (!$jumlah_pesanan){
+    if (empty($id_makanan)){
+        $error_massage = "Pilih makanan terlebih dahulu";
+    } elseif (empty($id_minuman)){
+        $error_massage = "Pilih minuman terlebih dahulu";
+    } elseif (empty($jumlah_pesanan)){
         $error_massage = "Jumlah Pesanan tidak boleh kosong";
-    }
-
-    
-
-    if (!is_numeric($jumlah_pesanan)){
+    } elseif ($jumlah_pesanan <= 0){
+        $error_massage = "Jumlah Pesanan harus lebih dari 0";
+    } elseif (!is_numeric($jumlah_pesanan)){
         $error_massage = "Jumlah Pesanan harus berupa angka";
     }
-}
 
+if (empty($error_massage)){
     $query_makanan = "Select * from makanan where id_makanan = '$id_makanan'";
     $result_makanan = mysqli_query($conn, $query_makanan);
-
-    if (my sqli_num_rows($result_makanan) > 0) {
+    if (mysqli_num_rows($result_makanan) > 0) {
         $data_makanan = mysqli_fetch_assoc($result_makanan);
         $harga_makanan = $data_makanan['Harga'];
         $stok_makanan = $data_makanan['Stok'];
 
         if ($jumlah_pesanan > $stok_makanan) {
             $error_massage = "Stok makanan tidak mencukupi";
-        }else{
-            $error_massage = "Makanan tidak terdapat pada menu"
         }
+    } else {
+        $error_massage = "Makanan tidak terdapat pada menu";
     }
+}
 
 
+    if(empty($error_massage)){
     $query_minuman = "Select * from minuman where id_minuman = '$id_minuman'";
-    $result_minuman = mysqli_query($conn, $query_minuman);  
-<<<<<<< HEAD
-    $harga_minuman = mysqli_fetch_assoc($result_minuman)['Harga'];
-    
- 
-=======
->>>>>>> 5ff0c08ea567664f34cec8a6fefff3ae7da2aa70
+    $result_minuman = mysqli_query($conn, $query_minuman);
 
     if (mysqli_num_rows($result_minuman) > 0) {
         $data_minuman = mysqli_fetch_assoc($result_minuman);
         $harga_minuman = $data_minuman['Harga'];
         $stok_minuman = $data_minuman['Stok'];
+
         if ($jumlah_pesanan > $stok_minuman) {
             $error_massage = "Stok minuman tidak mencukupi";
-        }else{
-            $error_massage = "Minuman tidak terdapat pada menu"
         }
+        
+    }else{
+            $error_massage = "Minuman tidak terdapat pada menu";
+        }
+    }
+
+
+    if (empty ($error_massage)){
+        $total_harga = ($harga_makanan + $harga_minuman) * $jumlah_pesanan;
+
+        $query_pesan = "Insert into pesan (Id_user, Id_makanan, Id_minuman, Jumlah_Pesanan, Tanggal_Pesanan, Total_Harga) values ('$id_user', '$id_makanan', '$id_minuman', '$jumlah_pesanan', '$tanggal_pesan', '$total_harga')";
+    }
+
+    if(mysqli_query($conn, $query_pesan)){
+        //update stok makanan
+        $new_stok_makanan = $stok_makanan - $jumlah_pesanan;
+        $query_update_makanan = "Update makanan set Stok = '$new_stok_makanan' where id_makanan = '$id_makanan'";
+        mysqli_query($conn, $query_update_makanan);
+
+        //update stok minuman
+        $new_stok_minuman = $stok_minuman - $jumlah_pesanan;
+        $query_update_minuman = "Update minuman set Stok = '$new_stok_minuman' where id_minuman = '$id_minuman'";
+        mysqli_query($conn, $query_update_minuman);
+}
+
 }
 
 ?>
