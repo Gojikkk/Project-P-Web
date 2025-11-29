@@ -26,6 +26,8 @@ if (isset($_POST['pesan'])){
         $error_massage = "Jumlah Pesanan tidak boleh kosong";
     }
 
+    
+
     if (!is_numeric($jumlah_pesanan)){
         $error_massage = "Jumlah Pesanan harus berupa angka";
     }
@@ -49,7 +51,16 @@ if (isset($_POST['pesan'])){
 
     $query_minuman = "Select * from minuman where id_minuman = '$id_minuman'";
     $result_minuman = mysqli_query($conn, $query_minuman);  
-    $harga_minuman = mysqli_fetch_assoc($result_minuman)['Harga'];
 
-
+    if (mysqli_num_rows($result_minuman) > 0) {
+        $data_minuman = mysqli_fetch_assoc($result_minuman);
+        $harga_minuman = $data_minuman['Harga'];
+        $stok_minuman = $data_minuman['Stok'];
+        if ($jumlah_pesanan > $stok_minuman) {
+            $error_massage = "Stok minuman tidak mencukupi";
+        }else{
+            $error_massage = "Minuman tidak terdapat pada menu"
+        }
 }
+
+?>
