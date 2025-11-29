@@ -50,6 +50,7 @@ if (isset($_POST['pesan'])){
     $query_minuman = "Select * from minuman where id_minuman = '$id_minuman'";
     $result_minuman = mysqli_query($conn, $query_minuman);  
     $harga_minuman = mysqli_fetch_assoc($result_minuman)['Harga'];
-
+    
+ 
 
 }
