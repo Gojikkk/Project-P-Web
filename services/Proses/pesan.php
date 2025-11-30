@@ -17,7 +17,6 @@ if (isset($_POST['pesan'])){
     $name = $_SESSION['Username'];
     $no_telepon = $_SESSION['No_Telepon'];
 
-
 // Ambil data dari form
     $id_menu = htmlentities(strip_tags(trim ($_POST['Id_Menu'])));
     $jumlah_pesanan = htmlentities(strip_tags(trim ($_POST['Jumlah_Pesanan'])));
@@ -47,14 +46,14 @@ if (empty($error_massage)){
     }
 }
 
-    
+    // cek stok 
     if (empty($error_massage)){
         if ($jumlah_pesanan > $stok_menu){
             $error_massage = "Stok tidak mencukupi.";
         }
     }
 
-
+    // cek validasi input order type
     if (empty($error_massage)){
         if ($order_type === 'Dine-in' ){
         if (empty($Nomor_Meja)){
@@ -67,6 +66,8 @@ if (empty($error_massage)){
     }
     } 
 
+
+    // itung harga sementara 
     if (empty ($error_massage)){
         $harga_sementara = $harga_menu * $jumlah_pesanan;
     }
