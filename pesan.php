@@ -2,11 +2,15 @@
 session_start();
 include 'connection.php';
 
+
+// Cek apakah user sudah login
 if (!isset($_SESSION['Logged In']) || $_SESSION['Logged In'] !== true) {
     header("Location: login.php");
     exit;
 }
 
+
+// Proses pemesanan
 if (isset($_POST['pesan'])){
     $id_user = $_SESSION['Id_user'];
 
@@ -15,6 +19,7 @@ if (isset($_POST['pesan'])){
     $jumlah_pesanan = htmlentities(strip_tags(trim ($_POST['Jumlah_Pesanan'])));
     $tanggal_pesan = date('Y-m-d H:i:s');
 
+    // Validasi input
     $error_massage = "";
     if (empty($id_makanan)){
         $error_massage = "Pilih makanan terlebih dahulu";
@@ -28,6 +33,7 @@ if (isset($_POST['pesan'])){
         $error_massage = "Jumlah Pesanan harus berupa angka";
     }
 
+    // Cek stok dan harga makanan
 if (empty($error_massage)){
     $query_makanan = "Select * from makanan where id_makanan = '$id_makanan'";
     $result_makanan = mysqli_query($conn, $query_makanan);
@@ -44,7 +50,7 @@ if (empty($error_massage)){
     }
 }
 
-
+// Cek stok dan harga minuman
     if(empty($error_massage)){
     $query_minuman = "Select * from minuman where id_minuman = '$id_minuman'";
     $result_minuman = mysqli_query($conn, $query_minuman);
@@ -64,11 +70,14 @@ if (empty($error_massage)){
     }
 
 
+    //fungsi hitung total harga dan simpan ke database
     if (empty ($error_massage)){
         $total_harga = ($harga_makanan + $harga_minuman) * $jumlah_pesanan;
 
         $query_pesan = "Insert into pesan (Id_user, Id_makanan, Id_minuman, Jumlah_Pesanan, Tanggal_Pesanan, Total_Harga) values ('$id_user', '$id_makanan', '$id_minuman', '$jumlah_pesanan', '$tanggal_pesan', '$total_harga')";
     }
+
+
 
     if(mysqli_query($conn, $query_pesan)){
         //update stok makanan
@@ -82,6 +91,13 @@ if (empty($error_massage)){
         mysqli_query($conn, $query_update_minuman);
 }
 
+    if ($error_massage == ""){
+        echo "<script>alert('Pesanan berhasil dibuat!'); window.location.href='menu.php';</script>";
+    } else {
+        echo "<script>alert('Error: $error_massage'); window.location.href='menu.php';</script>";
+    }
+
 }
+
 
 ?>
