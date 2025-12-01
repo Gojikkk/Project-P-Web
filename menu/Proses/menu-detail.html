@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Detail - Kopi Nusantara</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text);
+            text-decoration: none;
+            font-size: 0.95em;
+            margin-bottom: 30px;
+            transition: gap 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 12px;
+        }
+
+        /* Main Content */
+        .detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 50px;
+            margin-bottom: 80px;
+        }
+
+        /* Left Side - Image */
+        .product-image-section {
+            position: relative;
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--color-text);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 2;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 500px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-image i {
+            font-size: 6em;
+            color: #ccc;
+        }
+
+        /* Right Side - Info */
+        .product-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            text-transform: capitalize;
+        }
+
+        .product-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--color-text);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 1.05em;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .price-section {
+            margin-bottom: 35px;
+        }
+
+        .product-price {
+            font-size: 2em;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        /* Quantity Selector */
+        .quantity-section {
+            margin-bottom: 30px;
+        }
+
+        .quantity-label {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--bg-secondary);
+            background: var(--bg-secondary);
+            color: var(--color-text);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .qty-btn:hover {
+            background: var(--color-text);
+            color: white;
+            border-color: var(--color-text);
+        }
+
+        .qty-input {
+            width: 60px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            border: 2px solid var(--bg-secondary);
+            border-radius: 8px;
+            padding: 8px;
+            background: white;
+        }
+
+        /* Total Section */
+        .total-section {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-label {
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .total-price {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        /* Order Button */
+        .order-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--color-text);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .order-btn:hover {
+            background: #4B3832;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(103, 70, 54, 0.3);
+        }
+
+        /* Recommendations Section */
+        .recommendations {
+            margin-top: 60px;
+            padding-top: 60px;
+            border-top: 2px solid var(--bg-secondary);
+        }
+
+        .recommendations h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            color: var(--color-text);
+            margin-bottom: 35px;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .rec-image {
+            width: 100%;
+            height: 180px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rec-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .rec-image i {
+            font-size: 3em;
+            color: #ccc;
+        }
+
+        .rec-info {
+            padding: 18px;
+        }
+
+        .rec-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2em;
+            color: var(--color-text);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .rec-description {
+            color: #666;
+            font-size: 0.85em;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .rec-price {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        /* Footer Section */
+        .menu-detail-footer {
+            background: var(--color-text);
+            color: white;
+            margin-top: 80px;
+            padding: 50px 0 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3,
+        .footer-section h4 {
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .footer-section p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            opacity: 1;
+        }
+
+        .contact-info p {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2em;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .social-links a:hover {
+            opacity: 1;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .newsletter-form input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .newsletter-form button {
+            padding: 10px 20px;
+            background: var(--bg-secondary);
+            color: var(--color-text);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .detail-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .product-image {
+                height: 400px;
+            }
+
+            .product-title {
+                font-size: 2em;
+            }
+
+            .recommendations-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .product-image {
+                height: 300px;
+            }
+
+            .product-title {
+                font-size: 1.8em;
+            }
+
+            .product-price {
+                font-size: 1.6em;
+            }
+
+            .total-price {
+                font-size: 1.5em;
+            }
+
+            .recommendations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <a href="menu.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+
+        <!-- Main Content -->
+        <div class="detail-container">
+            <!-- Product Image -->
+            <div class="product-image-section">
+                <div class="popular-badge" id="popularBadge" style="display: none;">
+                    <i class="fas fa-star"></i> Popular
+                </div>
+                <div class="product-image" id="productImage">
+                    <i class="fas fa-mug-hot"></i>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info">
+                <div class="category-tag" id="categoryTag">
+                    <i class="fas fa-tag"></i> <span id="categoryName">Category</span>
+                </div>
+                
+                <h1 class="product-title" id="productTitle">Product Name</h1>
+                
+                <p class="product-description" id="productDescription">
+                    Product description goes here
+                </p>
+
+                <div class="price-section">
+                    <div class="product-price" id="productPrice">Rp 0</div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="quantity-section">
+                    <div class="quantity-label">Quantity</div>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="decreaseQty()">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" class="qty-input" id="quantity" value="1" min="1" readonly>
+                        <button class="qty-btn" onclick="increaseQty()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="total-section">
+                    <div class="total-label">Total</div>
+                    <div class="total-price" id="totalPrice">Rp 0</div>
+                </div>
+
+                <!-- Order Button -->
+                <button class="order-btn" onclick="orderNow()">
+                    <i class="fas fa-shopping-bag"></i> Order Now
+                </button>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="recommendations">
+            <h2>You May Also Like</h2>
+            <div class="recommendations-grid" id="recommendationsGrid"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="menu-detail-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi Nusantara</h3>
+                <p>Experience the finest Indonesian coffee culture with authentic flavors crafted with passion.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Sign Up</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <div class="contact-info">
+                    <p><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</p>
+                    <p><i class="fas fa-phone"></i> +62 856 9933 948</p>
+                    <p><i class="fas fa-envelope"></i> hello@kopinusantara.com</p>
+                    <p><i class="fas fa-clock"></i> 07:00 - 22:00</p>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Subscribe to get special offers and updates</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Your email address">
+                    <button type="submit">Subscribe</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi Nusantara. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Menu Data (same as menu page)
+        const menuItems = [
+            {
+                id: 1,
+                name: 'Signature Latte',
+                category: 'coffee',
+                price: 45000,
+                description: 'Our house special latte with smooth espresso and velvety steamed milk, topped with delicate foam art.',
+                image: 'signature.jpg',
+                popular: true
+            },
+            {
+                id: 2,
+                name: 'Cappuccino',
+                category: 'coffee',
+                price: 42000,
+                description: 'Classic Italian coffee with equal parts espresso, steamed milk, and milk foam.',
+                image: 'Latte.jpg',
+                popular: true
+            },
+            {
+                id: 3,
+                name: 'Caramel Macchiato',
+                category: 'coffee',
+                price: 48000,
+                description: 'Espresso with vanilla, steamed milk, and drizzled caramel sauce.',
+                image: 'Caramel Macchiato.jpg',
+                popular: true
+            },
+            {
+                id: 4,
+                name: 'Americano',
+                category: 'coffee',
+                price: 35000,
+                description: 'Bold espresso shots with hot water for a clean, strong flavor.',
+                image: 'Iced Americano.jpg',
+                popular: false
+            },
+            {
+                id: 5,
+                name: 'Matcha Latte',
+                category: 'tea',
+                price: 45000,
+                description: 'Premium Japanese matcha whisked with steamed milk for a creamy, earthy taste.',
+                image: 'Matcha.jpg',
+                popular: true
+            },
+            {
+                id: 6,
+                name: 'Earl Grey',
+                category: 'tea',
+                price: 32000,
+                description: 'Classic black tea with bergamot citrus aroma, served hot or iced.',
+                image: 'Earl Grey.jpg',
+                popular: false
+            },
+            {
+                id: 7,
+                name: 'Jasmine Green Tea',
+                category: 'tea',
+                price: 30000,
+                description: 'Fragrant jasmine blossoms infused with premium green tea leaves.',
+                image: 'jasmine tea.jpg',
+                popular: false
+            },
+            {
+                id: 8,
+                name: 'Butter Croissant',
+                category: 'pastry',
+                price: 28000,
+                description: 'Flaky, buttery French croissant baked fresh daily.',
+                image: 'croissant.jpg',
+                popular: true
+            },
+            {
+                id: 9,
+                name: 'Almond Danish',
+                category: 'pastry',
+                price: 35000,
+                description: 'Sweet pastry filled with almond cream and topped with sliced almonds.',
+                image: 'Almond Danish.jpg',
+                popular: false
+            },
+            {
+                id: 10,
+                name: 'Chocolate Muffin',
+                category: 'pastry',
+                price: 25000,
+                description: 'Rich, moist chocolate muffin with chocolate chips.',
+                image: 'Chocolate Muffin.jpg',
+                popular: false
+            },
+            {
+                id: 11,
+                name: 'Tiramisu',
+                category: 'dessert',
+                price: 55000,
+                description: 'Classic Italian dessert with layers of coffee-soaked ladyfingers and mascarpone cream.',
+                image: 'Tiramisu.jpg',
+                popular: true
+            },
+            {
+                id: 12,
+                name: 'Cheesecake',
+                category: 'dessert',
+                price: 50000,
+                description: 'Creamy New York style cheesecake with graham cracker crust.',
+                image: 'Cheesecake.jpg',
+                popular: false
+            },
+            {
+                id: 13,
+                name: 'Club Sandwich',
+                category: 'food',
+                price: 65000,
+                description: 'Triple-decker sandwich with chicken, bacon, lettuce, tomato, and mayo.',
+                image: 'Club Sandwiches.jpg',
+                popular: true
+            },
+            {
+                id: 14,
+                name: 'Beef Burger',
+                category: 'food',
+                price: 75000,
+                description: 'Juicy beef patty with cheese, lettuce, tomato, and special sauce.',
+                image: 'burger.jpg',
+                popular: false
+            },
+            {
+                id: 15,
+                name: 'Pasta Aglio Olio',
+                category: 'food',
+                price: 58000,
+                description: 'Spaghetti with garlic, olive oil, and red pepper flakes.',
+                image: 'Aglio Olio.jpg',
+                popular: false
+            }
+        ];
+
+        // Get product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id')) || 1;
+        const currentProduct = menuItems.find(item => item.id === productId);
+
+        // Format currency
+        function formatPrice(price) {
+            return `Rp ${price.toLocaleString('id-ID')}`;
+        }
+
+        // Load product details
+        function loadProductDetails() {
+            if (!currentProduct) {
+                window.location.href = 'menu.html';
+                return;
+            }
+
+            document.getElementById('productTitle').textContent = currentProduct.name;
+            document.getElementById('productDescription').textContent = currentProduct.description;
+            document.getElementById('productPrice').textContent = formatPrice(currentProduct.price);
+            document.getElementById('categoryName').textContent = currentProduct.category;
+            
+            // Show popular badge
+            if (currentProduct.popular) {
+                document.getElementById('popularBadge').style.display = 'flex';
+            }
+
+            // Load image
+            const imageContainer = document.getElementById('productImage');
+            if (currentProduct.image) {
+                imageContainer.innerHTML = `<img src="${currentProduct.image}" alt="${currentProduct.name}">`;
+            } else {
+                imageContainer.innerHTML = '<i class="fas fa-mug-hot"></i>';
+            }
+
+            updateTotal();
+        }
+
+        // Quantity controls
+        function increaseQty() {
+            const qtyInput = document.getElementById('quantity');
+            qtyInput.value = parseInt(qtyInput.value) + 1;
+            updateTotal();
+        }
+
+        function decreaseQty() {
+            const qtyInput = document.getElementById('quantity');
+            if (parseInt(qtyInput.value) > 1) {
+                qtyInput.value = parseInt(qtyInput.value) - 1;
+                updateTotal();
+            }
+        }
+
+        // Update total price
+        function updateTotal() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const total = currentProduct.price * quantity;
+            document.getElementById('totalPrice').textContent = formatPrice(total);
+        }
+
+        // Order now - Redirect to checkout page
+        function orderNow() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const total = currentProduct.price * quantity;
+            
+            // Redirect to checkout page with order data as URL parameters
+            const params = new URLSearchParams({
+                itemId: currentProduct.id,
+                itemName: encodeURIComponent(currentProduct.name),
+                itemPrice: currentProduct.price,
+                quantity: quantity,
+                total: total,
+                description: encodeURIComponent(currentProduct.description),
+                image: encodeURIComponent(currentProduct.image || ''),
+                category: currentProduct.category
+            });
+            
+            window.location.href = `checkout.html?${params.toString()}`;
+        }
+
+        // Load recommendations
+        function loadRecommendations() {
+            const recommendations = menuItems
+                .filter(item => item.id !== productId && item.category === currentProduct.category)
+                .slice(0, 3);
+
+            if (recommendations.length === 0) {
+                // Show different category items if no same category available
+                recommendations.push(...menuItems.filter(item => item.id !== productId).slice(0, 3));
+            }
+
+            const grid = document.getElementById('recommendationsGrid');
+            grid.innerHTML = recommendations.map(item => `
+                <div class="recommendation-card" onclick="goToProduct(${item.id})">
+                    <div class="rec-image">
+                        ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<i class="fas fa-mug-hot"></i>'}
+                    </div>
+                    <div class="rec-info">
+                        <div class="rec-name">${item.name}</div>
+                        <div class="rec-description">${item.description}</div>
+                        <div class="rec-price">${formatPrice(item.price)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Navigate to product
+        function goToProduct(id) {
+            window.location.href = `menu-detail.html?id=${id}`;
+        }
+
+        // Initialize
+        loadProductDetails();
+        loadRecommendations();
+    </script>
+</body>
+</html>

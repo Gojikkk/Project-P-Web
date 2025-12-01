@@ -32,7 +32,7 @@ if (isset($_POST['pesan'])){
     // Validasi input
     $error_massage = "";
 
-    // Cek stok dan harga makanan
+    // ngambil stok menu
 if (empty($error_massage)){
     $query_menu = "Select * from menu where Id_Menu = '$id_menu'";
     $result_menu = mysqli_query($conn, $query_menu);
@@ -77,7 +77,7 @@ if (empty($error_massage)){
     if (empty ($error_massage)){
         $total_harga = $harga_sementara + $servicefee;
         $query_pesan = "Insert into pesan (Id_user, Id_Menu, Jumlah_Pesanan, Tanggal_Pesan, Order_Type, Nomor_Meja, Alamat_Pengantaran, Notes, Total_Harga) values ('$id_user', '$id_menu', '$jumlah_pesanan', '$tanggal_pesan', '$order_type', '$Nomor_Meja', '$alamat_pengantaran', '$notes', '$total_harga')";
-    
+    }
 
     
     if(mysqli_query($conn, $query_pesan)){
@@ -86,7 +86,7 @@ if (empty($error_massage)){
         $query_update_menu = "Update menu set Stok = '$new_stok_menu' where Id_Menu = '$id_menu'";
         mysqli_query($conn, $query_update_menu);
 }
-    }
+    
 
 
     if ($error_massage == ""){
