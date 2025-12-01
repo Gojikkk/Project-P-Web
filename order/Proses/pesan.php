@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'connection.php';
+include '/connection/connection.php';
 
 
 // Cek apakah user sudah login

@@ -1,5 +1,6 @@
 <?php
-include 'connection.php';
+session_start();
+include '../../connection/connection.php';
 
 if (isset($_POST['daftar'])){
     $username = htmlentities(strip_tags(trim ($_POST['username'])));
@@ -23,8 +24,12 @@ if (isset($_POST['daftar'])){
         $error_massage = "Email tidak boleh kosong";
 }
 
+    if (empty($error_massage) && strlen($Password) < 8){
+        $error_massage = "Password minimal 6 karakter";
+    }
+
     //validasi format input
-    if (is_numeric($Telp)){
+    if (!is_numeric($Telp)){
         $error_massage = "Nomor Telepon harus berupa angka";
     }
 
@@ -76,12 +81,19 @@ if (isset($_POST['daftar'])){
     $result = mysqli_query($conn, $query);
 
     if ($result){
-        $massage = "Pendaftaran berhasil!";
-        $massage = urlencode($massage);
-        header ("Location: index.php?massage=$massage");
+        $_SESSION['success'] = "Pendaftaran berhasil! Silakan login.";
+        header("Location: ../proses login/login.html");
+        exit();
     } else {
         die ("Pendaftaran gagal: " . mysqli_error($conn));
     }
 }
+
+if ($error_massage != ""){
+        $encoded_error = urlencode($error_massage);
+        header("Location: register.html?error=" . $encoded_error);
+        exit();
+    }
 }
+
 ?>
