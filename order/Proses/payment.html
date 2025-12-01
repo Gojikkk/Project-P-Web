@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Kopi Nusantara</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Main Layout */
+        .payment-container {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 50px;
+            margin: 80px auto 0;
+            max-width: 1200px;
+            padding: 40px 20px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text);
+            text-decoration: none;
+            font-size: 0.95em;
+            margin-bottom: 30px;
+            transition: gap 0.3s ease;
+        }
+
+        .back-btn:hover {
+            gap: 12px;
+        }
+
+        /* Payment Form */
+        .payment-form {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            color: var(--color-text);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--bg-secondary);
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--color-accent);
+        }
+
+        .payment-method.selected {
+            border-color: var(--color-text);
+            background: var(--bg-secondary);
+        }
+
+        .payment-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--color-text);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .payment-method.selected .payment-radio::after {
+            opacity: 1;
+        }
+
+        .payment-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            color: var(--color-text);
+        }
+
+        .payment-name {
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        /* Payment Details */
+        .payment-details {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .payment-details.show {
+            display: block;
+        }
+
+        .payment-details-title {
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .account-number {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px dashed var(--color-accent);
+            margin-bottom: 15px;
+        }
+
+        .account-number-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .account-number-value {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--color-text);
+            letter-spacing: 1px;
+        }
+
+        .copy-btn {
+            background: var(--color-text);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #4B3832;
+        }
+
+        .payment-instruction {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pay Button */
+        .pay-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--color-text);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .pay-btn:hover {
+            background: #4B3832;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(103, 70, 54, 0.3);
+        }
+
+        .pay-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .summary-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5em;
+            color: var(--color-text);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .order-items {
+            margin-bottom: 25px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 5px;
+        }
+
+        .item-details {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: var(--color-text);
+            white-space: nowrap;
+            margin-left: 15px;
+        }
+
+        .customer-info {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .customer-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .order-totals {
+            border-top: 2px solid var(--bg-secondary);
+            padding-top: 20px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .total-label {
+            color: #666;
+        }
+
+        .total-amount {
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .grand-total {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--color-text);
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        /* Error Styles */
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Alert Styles */
+        .custom-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-alert.show {
+            transform: translateX(0);
+        }
+
+        .custom-alert.success {
+            background-color: #27ae60;
+        }
+
+        /* Footer */
+        .payment-footer {
+            background: var(--color-text);
+            color: white;
+            margin-top: 60px;
+            padding: 50px 0 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3,
+        .footer-section h4 {
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .footer-section p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            opacity: 1;
+        }
+
+        .contact-info p {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2em;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .social-links a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .payment-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .payment-form {
+                padding: 25px;
+            }
+
+            .payment-method {
+                padding: 15px;
+            }
+
+            .account-number-value {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i> Kopi Nusantara
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="register.html" class="signup-btn">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Alert Container -->
+    <div id="alertContainer"></div>
+
+    <div class="container">
+        <!-- Back Button -->
+        <a href="checkout.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Checkout
+        </a>
+
+        <div class="payment-container">
+            <!-- Payment Form -->
+            <div class="payment-form">
+                <h1 class="section-title">Select Payment Method</h1>
+
+                <!-- Payment Methods -->
+                <div class="payment-methods">
+                    <div class="payment-method" onclick="selectPaymentMethod('gopay')">
+                        <div class="payment-radio"></div>
+                        <div class="payment-info">
+                            <div class="payment-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="payment-name">Gopay</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-method" onclick="selectPaymentMethod('ovo')">
+                        <div class="payment-radio"></div>
+                        <div class="payment-info">
+                            <div class="payment-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="payment-name">OVO</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-method" onclick="selectPaymentMethod('dana')">
+                        <div class="payment-radio"></div>
+                        <div class="payment-info">
+                            <div class="payment-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="payment-name">DANA</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-method" onclick="selectPaymentMethod('bca')">
+                        <div class="payment-radio"></div>
+                        <div class="payment-info">
+                            <div class="payment-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <div class="payment-name">BCA Virtual Account</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-method" onclick="selectPaymentMethod('mandiri')">
+                        <div class="payment-radio"></div>
+                        <div class="payment-info">
+                            <div class="payment-icon">
+                                <i class="fas fa-landmark"></i>
+                            </div>
+                            <div class="payment-name">Mandiri Virtual Account</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-method" onclick="selectPaymentMethod('creditcard')">
+                        <div class="payment-radio"></div>
+                        <div class="payment-info">
+                            <div class="payment-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="payment-name">Credit/Debit Card</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Details -->
+                <div class="payment-details" id="paymentDetails">
+                    <!-- Payment details will be populated by JavaScript -->
+                </div>
+
+                <!-- Error Message -->
+                <div class="error-message" id="paymentError">
+                    Please select a payment method
+                </div>
+
+                <!-- Pay Button -->
+                <button class="pay-btn" id="payButton" onclick="processPayment()" disabled>
+                    Pay <span id="payAmount">Rp 0</span>
+                </button>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2 class="summary-title">Order Summary</h2>
+                
+                <!-- Customer Info -->
+                <div class="customer-info" id="customerInfo">
+                    <!-- Customer info will be populated by JavaScript -->
+                </div>
+
+                <div class="order-items" id="orderItems">
+                    <!-- Items will be populated by JavaScript -->
+                </div>
+
+                <div class="order-totals">
+                    <div class="total-row">
+                        <span class="total-label">Subtotal</span>
+                        <span class="total-amount" id="subtotal">Rp 0</span>
+                    </div>
+                    <div class="total-row">
+                        <span class="total-label">Tax (10%)</span>
+                        <span class="total-amount" id="tax">Rp 0</span>
+                    </div>
+                    <div class="total-row">
+                        <span class="total-label">Service Fee</span>
+                        <span class="total-amount" id="serviceFee">Rp 0</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span class="total-label">Total</span>
+                        <span class="total-amount" id="grandTotal">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <!-- Footer -->
+    <footer class="menu-detail-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi Nusantara</h3>
+                <p>Experience the finest Indonesian coffee culture with authentic flavors crafted with passion.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Sign Up</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <div class="contact-info">
+                    <p><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</p>
+                    <p><i class="fas fa-phone"></i> +62 856 9933 948</p>
+                    <p><i class="fas fa-envelope"></i> hello@kopinusantara.com</p>
+                    <p><i class="fas fa-clock"></i> 07:00 - 22:00</p>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Subscribe to get special offers and updates</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Your email address">
+                    <button type="submit">Subscribe</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi Nusantara. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let orderData = {};
+        let selectedPaymentMethod = '';
+
+        // Payment account data
+        const paymentAccounts = {
+            'gopay': {
+                number: '0812-3456-7890',
+                name: 'Kopi Nusantara Official',
+                instruction: 'Transfer via Gopay app. Payment will be verified automatically.'
+            },
+            'ovo': {
+                number: '0812-3456-7890',
+                name: 'Kopi Nusantara Official',
+                instruction: 'Transfer via OVO app. Payment will be verified automatically.'
+            },
+            'dana': {
+                number: '0812-3456-7890',
+                name: 'Kopi Nusantara Official',
+                instruction: 'Transfer via DANA app. Payment will be verified automatically.'
+            },
+            'bca': {
+                number: '8271-0283-4912',
+                name: 'PT Kopi Nusantara Indonesia',
+                instruction: 'Transfer ke BCA Virtual Account. Pembayaran akan diverifikasi otomatis dalam 5 menit.'
+            },
+            'mandiri': {
+                number: '8932-1746-2837',
+                name: 'PT Kopi Nusantara Indonesia',
+                instruction: 'Transfer ke Mandiri Virtual Account. Pembayaran akan diverifikasi otomatis dalam 5 menit.'
+            },
+            'creditcard': {
+                number: 'Pay securely with your credit/debit card',
+                name: 'Secure Payment Gateway',
+                instruction: 'You will be redirected to our secure payment gateway to complete your transaction.'
+            }
+        };
+
+        // Format currency
+        function formatPrice(price) {
+            return `Rp ${price.toLocaleString('id-ID')}`;
+        }
+
+        // Show custom alert
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `custom-alert ${type}`;
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+
+            // Show alert
+            setTimeout(() => alert.classList.add('show'), 100);
+
+            // Remove alert after 5 seconds
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.parentNode.removeChild(alert);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // Generate random order number
+        function generateOrderNumber() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 8; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // Load order data from localStorage
+        function loadOrderData() {
+            const savedOrder = localStorage.getItem('kopiNusantaraOrder');
+            if (savedOrder) {
+                orderData = JSON.parse(savedOrder);
+                updateOrderSummary();
+                updatePayButton();
+            } else {
+                // Fallback: redirect to checkout if no order data
+                window.location.href = 'checkout.html';
+            }
+        }
+
+        // Update order summary
+        function updateOrderSummary() {
+            // Customer info
+            const customerInfo = document.getElementById('customerInfo');
+            customerInfo.innerHTML = `
+                <p><strong>Name:</strong> ${orderData.customerInfo.fullName}</p>
+                <p><strong>Phone:</strong> ${orderData.customerInfo.phoneNumber}</p>
+                <p><strong>Order Type:</strong> ${orderData.orderType}</p>
+                ${orderData.customerInfo.tableNumber ? `<p><strong>Table:</strong> ${orderData.customerInfo.tableNumber}</p>` : ''}
+            `;
+
+            // Order items
+            const orderItems = document.getElementById('orderItems');
+            const subtotal = orderData.items.reduce((sum, item) => sum + item.total, 0);
+            const tax = subtotal * 0.1;
+            const serviceFee = orderData.orderType === 'delivery' ? 15000 : 5000;
+            const grandTotal = subtotal + tax + serviceFee;
+
+            orderItems.innerHTML = orderData.items.map(item => `
+                <div class="order-item">
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-details">Qty: ${item.quantity}</div>
+                    </div>
+                    <div class="item-price">${formatPrice(item.total)}</div>
+                </div>
+            `).join('');
+
+            // Update totals
+            document.getElementById('subtotal').textContent = formatPrice(subtotal);
+            document.getElementById('tax').textContent = formatPrice(tax);
+            document.getElementById('serviceFee').textContent = formatPrice(serviceFee);
+            document.getElementById('grandTotal').textContent = formatPrice(grandTotal);
+
+            // Update pay button
+            document.getElementById('payAmount').textContent = formatPrice(grandTotal);
+        }
+
+        // Update pay button state
+        function updatePayButton() {
+            const payButton = document.getElementById('payButton');
+            payButton.disabled = !selectedPaymentMethod;
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('Account number copied to clipboard!');
+            }).catch(() => {
+                showAlert('Failed to copy account number');
+            });
+        }
+
+        // Select payment method
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            // Show payment details
+            showPaymentDetails(method);
+            
+            // Hide error message
+            document.getElementById('paymentError').style.display = 'none';
+            
+            // Enable pay button
+            updatePayButton();
+        }
+
+        // Show payment details
+        function showPaymentDetails(method) {
+            const paymentDetails = document.getElementById('paymentDetails');
+            const account = paymentAccounts[method];
+            
+            if (method === 'creditcard') {
+                paymentDetails.innerHTML = `
+                    <div class="payment-details-title">Secure Card Payment</div>
+                    <div class="account-number">
+                        <div class="account-number-label">Payment Method</div>
+                        <div class="account-number-value">${account.number}</div>
+                    </div>
+                    <div class="payment-instruction">
+                        ${account.instruction}
+                    </div>
+                `;
+            } else {
+                paymentDetails.innerHTML = `
+                    <div class="payment-details-title">Transfer to:</div>
+                    <div class="account-number">
+                        <div class="account-number-label">Account Number</div>
+                        <div class="account-number-value">${account.number}</div>
+                        <button class="copy-btn" onclick="copyToClipboard('${account.number.replace(/-/g, '')}')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div class="account-number">
+                        <div class="account-number-label">Account Name</div>
+                        <div class="account-number-value">${account.name}</div>
+                    </div>
+                    <div class="payment-instruction">
+                        ${account.instruction}
+                    </div>
+                `;
+            }
+            
+            paymentDetails.classList.add('show');
+        }
+
+        // Process payment
+        function processPayment() {
+            if (!selectedPaymentMethod) {
+                document.getElementById('paymentError').style.display = 'block';
+                return;
+            }
+
+            // Add payment method to order data
+            orderData.paymentMethod = selectedPaymentMethod;
+            orderData.orderNumber = generateOrderNumber();
+            orderData.orderDate = new Date().toLocaleString('id-ID');
+            orderData.paymentAccount = paymentAccounts[selectedPaymentMethod].number;
+
+            // Save complete order data
+            localStorage.setItem('kopiNusantaraOrder', JSON.stringify(orderData));
+
+            // Simulate payment processing
+            const payButton = document.getElementById('payButton');
+            payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            payButton.disabled = true;
+
+            // Redirect to confirmation page after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'order-confirmed.html';
+            }, 2000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrderData();
+        });
+    </script>
+</body>
+</html>

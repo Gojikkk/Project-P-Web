@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Menu - Kopi Nusantara</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 80px auto 0;
+            padding: 40px 20px;
+        }
+
+        /* Header Section */
+        .menu-header {
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .menu-header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* Search Bar */
+        .search-container {
+            width: 100%;
+            max-width: 540px;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-secondary);
+            padding: 15px 20px;
+            border-radius: 50px;
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--color-accent);
+        }
+
+        .search-box i {
+            color: #888;
+            margin-right: 12px;
+            font-size: 1.1em;
+        }
+
+        .search-box input {
+            border: none;
+            background: none;
+            font-size: 1em;
+            color: var(--color-text);
+            width: 100%;
+            outline: none;
+        }
+
+        /* Category Filters */
+        .category-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            background: var(--bg-secondary);
+            color: var(--color-text);
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn:hover {
+            background: var(--color-accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .category-btn.active {
+            background: var(--color-text);
+            color: white;
+        }
+
+        /* Items Counter */
+        .items-counter {
+            color: #666;
+            font-size: 1em;
+            margin-bottom: 30px;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #674636;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 2;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 200px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-image i {
+            font-size: 3em;
+            color: #ccc;
+        }
+
+        .item-info {
+            padding: 20px;
+        }
+
+        .item-category {
+            color: #888;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            text-transform: capitalize;
+        }
+
+        .item-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .item-description {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .item-price {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--color-text);
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-results i {
+            font-size: 4em;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .no-results h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .no-results p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-header h1 {
+                font-size: 2em;
+            }
+
+            .category-filters {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 10px;
+            }
+
+            .category-btn {
+                white-space: nowrap;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i> Kopi Nusantara
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="menu.html" class="active">Menu</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="register.html" class="signup-btn">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Header -->
+        <div class="menu-header">
+            <h1>Our Menu</h1>
+            <p>Discover our carefully curated selection of coffee, tea, pastries, and more.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search menu...">
+            </div>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="category-filters">
+            <button class="category-btn active" data-category="all">
+                All
+            </button>
+            <button class="category-btn" data-category="coffee">
+                <i class="fas fa-coffee"></i> Coffee
+            </button>
+            <button class="category-btn" data-category="tea">
+                <i class="fas fa-mug-hot"></i> Tea
+            </button>
+            <button class="category-btn" data-category="pastry">
+                <i class="fas fa-cookie-bite"></i> Pastry
+            </button>
+            <button class="category-btn" data-category="dessert">
+                <i class="fas fa-ice-cream"></i> Dessert
+            </button>
+            <button class="category-btn" data-category="food">
+                <i class="fas fa-utensils"></i> Food
+            </button>
+        </div>
+
+        <!-- Items Counter -->
+        <div class="items-counter">
+            Showing <span id="itemCount">0</span> items
+        </div>
+
+        <!-- Menu Grid -->
+        <div class="menu-grid" id="menuGrid"></div>
+
+        <!-- No Results Message -->
+        <div class="no-results" id="noResults" style="display: none;">
+            <i class="fas fa-search"></i>
+            <h3>No items found</h3>
+            <p>Try searching with different keywords or browse all categories</p>
+        </div>
+    </div>
+    <div id="footer"></div>
+    <script>
+        
+    
+        // Menu Data
+        const menuItems = [
+            {
+                id: 1,
+                name: 'Signature Latte',
+                category: 'coffee',
+                price: 45000,
+                description: 'Our house special latte with smooth espresso and velvety steamed milk, topped with delicate foam art.',
+                image: 'signature.jpg',
+                popular: true
+            },
+            {
+                id: 2,
+                name: 'Cappuccino',
+                category: 'coffee',
+                price: 42000,
+                description: 'Classic Italian coffee with equal parts espresso, steamed milk, and milk foam.',
+                image: 'Latte.jpg',
+                popular: true
+            },
+            {
+                id: 3,
+                name: 'Caramel Macchiato',
+                category: 'coffee',
+                price: 48000,
+                description: 'Espresso with vanilla, steamed milk, and drizzled caramel sauce.',
+                image: 'Caramel Macchiato.jpg',
+                popular: true
+            },
+            {
+                id: 4,
+                name: 'Americano',
+                category: 'coffee',
+                price: 35000,
+                description: 'Bold espresso shots with hot water for a clean, strong flavor.',
+                image: 'Iced Americano.jpg',
+                popular: false
+            },
+            {
+                id: 5,
+                name: 'Matcha Latte',
+                category: 'tea',
+                price: 45000,
+                description: 'Premium Japanese matcha whisked with steamed milk for a creamy, earthy taste.',
+                image: 'Matcha.jpg',
+                popular: true
+            },
+            {
+                id: 6,
+                name: 'Earl Grey',
+                category: 'tea',
+                price: 32000,
+                description: 'Classic black tea with bergamot citrus aroma, served hot or iced.',
+                image: 'Earl Grey.jpg',
+                popular: false
+            },
+            {
+                id: 7,
+                name: 'Jasmine Green Tea',
+                category: 'tea',
+                price: 30000,
+                description: 'Fragrant jasmine blossoms infused with premium green tea leaves.',
+                image: 'jasmine tea.jpg',
+                popular: false
+            },
+            {
+                id: 8,
+                name: 'Butter Croissant',
+                category: 'pastry',
+                price: 28000,
+                description: 'Flaky, buttery French croissant baked fresh daily.',
+                image: 'croissant.jpg',
+                popular: true
+            },
+            {
+                id: 9,
+                name: 'Almond Danish',
+                category: 'pastry',
+                price: 35000,
+                description: 'Sweet pastry filled with almond cream and topped with sliced almonds.',
+                image: 'Almond Danish.jpg',
+                popular: false
+            },
+            {
+                id: 10,
+                name: 'Chocolate Muffin',
+                category: 'pastry',
+                price: 25000,
+                description: 'Rich, moist chocolate muffin with chocolate chips.',
+                image: 'Chocolate Muffin.jpg',
+                popular: false
+            },
+            {
+                id: 11,
+                name: 'Tiramisu',
+                category: 'dessert',
+                price: 55000,
+                description: 'Classic Italian dessert with layers of coffee-soaked ladyfingers and mascarpone cream.',
+                image: 'Tiramisu.jpg',
+                popular: true
+            },
+            {
+                id: 12,
+                name: 'Cheesecake',
+                category: 'dessert',
+                price: 50000,
+                description: 'Creamy New York style cheesecake with graham cracker crust.',
+                image: 'Cheesecake.jpg',
+                popular: false
+            },
+            {
+                id: 13,
+                name: 'Club Sandwich',
+                category: 'food',
+                price: 65000,
+                description: 'Triple-decker sandwich with chicken, bacon, lettuce, tomato, and mayo.',
+                image: 'Club Sandwiches.jpg',
+                popular: true
+            },
+            {
+                id: 14,
+                name: 'Beef Burger',
+                category: 'food',
+                price: 75000,
+                description: 'Juicy beef patty with cheese, lettuce, tomato, and special sauce.',
+                image: 'burger.jpg',
+                popular: false
+            },
+            {
+                id: 15,
+                name: 'Pasta Aglio Olio',
+                category: 'food',
+                price: 58000,
+                description: 'Spaghetti with garlic, olive oil, and red pepper flakes.',
+                image: 'Aglio Olio.jpg',
+                popular: false
+            }
+        ];
+
+        // State
+        let currentCategory = 'all';
+        let searchQuery = '';
+
+        // Format currency
+        function formatPrice(price) {
+            return `Rp ${price.toLocaleString('id-ID')}`;
+        }
+
+        // Render menu items
+        function renderMenu() {
+            const menuGrid = document.getElementById('menuGrid');
+            const noResults = document.getElementById('noResults');
+            
+            // Filter items
+            let filteredItems = menuItems;
+            
+            if (currentCategory !== 'all') {
+                filteredItems = filteredItems.filter(item => item.category === currentCategory);
+            }
+            
+            if (searchQuery) {
+                filteredItems = filteredItems.filter(item => 
+                    item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    item.description.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+            
+            // Update counter
+            document.getElementById('itemCount').textContent = filteredItems.length;
+            
+            // Show/hide no results
+            if (filteredItems.length === 0) {
+                menuGrid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            } else {
+                menuGrid.style.display = 'grid';
+                noResults.style.display = 'none';
+            }
+            
+            // Render items
+            menuGrid.innerHTML = filteredItems.map(item => `
+                <div class="menu-item" onclick="goToDetail(${item.id})">
+                    ${item.popular ? '<div class="popular-badge"><i class="fas fa-star"></i> Popular</div>' : ''}
+                    <div class="item-image">
+                        ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<i class="fas fa-mug-hot"></i>'}
+                    </div>
+                    <div class="item-info">
+                        <div class="item-category"><i class="fas fa-tag"></i> ${item.category}</div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-description">${item.description}</div>
+                        <div class="item-price">${formatPrice(item.price)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Category filter
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                renderMenu();
+            });
+        });
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderMenu();
+        });
+
+        // Go to detail page
+        function goToDetail(itemId) {
+            window.location.href = `menu-detail.html?id=${itemId}`;
+        }
+
+        // Initial render
+        renderMenu();
+
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error loading footer:', error);
+            });
+
+        // Handle internal links from footer
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('a[href^="#"]')) {
+                e.preventDefault();
+                const targetId = e.target.closest('a').getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

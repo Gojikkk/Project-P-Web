@@ -24,7 +24,7 @@ if (isset($_POST['daftar'])){
 }
 
     //validasi format input
-    if (!is_numeric($Telp)){
+    if (is_numeric($Telp)){
         $error_massage = "Nomor Telepon harus berupa angka";
     }
 
