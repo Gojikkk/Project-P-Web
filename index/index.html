@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kopi Nusantara - Experience the Finest</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i> Kopi Nusantara
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="register.html" class="signup-btn">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <!-- Hero Section -->
+    <section class="hero-section container">
+        <div class="status-badge">
+            <span class="dot"></span> Now Open • Fresh Brews Daily
+        </div>
+        
+        <h1 class="hero-title" style="color: #4B3832;">Experience the Finest</h1>
+        <h1 class="hero-title">Indonesian Coffee</h1>
+        
+        <p class="hero-subtitle">
+            From the highlands of Toraja to the slopes of Mount Gede, we bring you authentic flavors crafted with passion.
+        </p>
+
+        <div class="search-and-action">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search menu..." onkeypress="handleSearchKeyPress(event)">
+                <button class="search-btn" onclick="performSearch()">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            <button class="explore-btn" onclick="scrollToCategories()">
+                Explore Menu <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <div class="details-bar">
+            <div class="detail-item">
+                <i class="fas fa-star rating-icon"></i> 4.9 Rating
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-clock open-icon"></i> 07:00-22:00 Open
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-map-marker-alt location-icon"></i> Jakarta Location
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section container" id="categories">
+        <div class="section-header">
+            <h1>Browse Categories</h1>
+            <p>Find your perfect drink or snack</p>
+        </div>
+
+        <div class="categories-grid-horizontal">
+            <div class="category-card-horizontal" onclick="goToCategory('coffee')">
+                <div class="category-icon-horizontal">
+                    <i class="fas fa-coffee"></i>
+                </div>
+                <div class="category-content">
+                    <h3>Coffee</h3>
+                    <p>Traditional & modern coffee blends</p>
+                </div>
+            </div>
+
+            <div class="category-card-horizontal" onclick="goToCategory('tea')">
+                <div class="category-icon-horizontal">
+                    <i class="fas fa-mug-hot"></i>
+                </div>
+                <div class="category-content">
+                    <h3>Tea</h3>
+                    <p>Herbal and traditional teas</p>
+                </div>
+            </div>
+
+            <div class="category-card-horizontal" onclick="goToCategory('pastry')">
+                <div class="category-icon-horizontal">
+                    <i class="fas fa-cookie-bite"></i>
+                </div>
+                <div class="category-content">
+                    <h3>Pastry</h3>
+                    <p>Fresh baked goods</p>
+                </div>
+            </div>
+
+            <div class="category-card-horizontal" onclick="goToCategory('dessert')">
+                <div class="category-icon-horizontal">
+                    <i class="fas fa-ice-cream"></i>
+                </div>
+                <div class="category-content">
+                    <h3>Dessert</h3>
+                    <p>Sweet treats & cakes</p>
+                </div>
+            </div>
+
+            <div class="category-card-horizontal" onclick="goToCategory('food')">
+                <div class="category-icon-horizontal">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="category-content">
+                    <h3>Food</h3>
+                    <p>Light meals & snacks</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Items Section -->
+    <section class="items-section container" id="popular">
+        <div class="section-header-left">
+            <div class="section-title-group">
+                <h1>Popular Items</h1>
+                <p>Our customers' favorites</p>
+            </div>
+            <button class="view-all-btn" onclick="window.location.href='menu.html'">
+                View All Menu <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <div class="items-grid-four">
+            <!-- Item 1 -->
+            <div class="item-card-popular" onclick="goToItemDetail(1)">
+                <div class="item-badge">Popular</div>
+                <div class="item-image">
+                    <img src="signature.jpg" alt="Signature Latte">
+                </div>
+                <div class="item-info-popular">
+                    <h3>Signature Latte</h3>
+                    <p>Our house special latte with smooth espresso and velvety steamed milk, topped with delicate foam art.</p>
+                    <div class="item-price">Rp 45.000</div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="item-card-popular" onclick="goToItemDetail(2)">
+                <div class="item-badge">Popular</div>
+                <div class="item-image">
+                    <img src="Latte.jpg" alt="Cappuccino">
+                </div>
+                <div class="item-info-popular">
+                    <h3>Cappuccino</h3>
+                    <p>Classic Italian coffee with equal parts espresso, steamed milk, and milk foam.</p>
+                    <div class="item-price">Rp 42.000</div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="item-card-popular" onclick="goToItemDetail(3)">
+                <div class="item-badge">Popular</div>
+                <div class="item-image">
+                    <img src="Caramel Macchiato.jpg" alt="Caramel Macchiato">
+                </div>
+                <div class="item-info-popular">
+                    <h3>Caramel Macchiato</h3>
+                    <p>Espresso with vanilla, steamed milk, and drizzled caramel sauce.</p>
+                    <div class="item-price">Rp 48.000</div>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="item-card-popular" onclick="goToItemDetail(5)">
+                <div class="item-badge">Popular</div>
+                <div class="item-image">
+                    <img src="Matcha.jpg" alt="Matcha Latte">
+                </div>
+                <div class="item-info-popular">
+                    <h3>Matcha Latte</h3>
+                    <p>Premium Japanese matcha whisked with steamed milk for a creamy, earthy taste.</p>
+                    <div class="item-price">Rp 45.000</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer"></div>
+    <script>
+        // Smooth scroll function
+        function scrollToCategories() {
+            document.getElementById('categories').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Fungsi untuk pergi ke kategori di menu.html
+        function goToCategory(category) {
+            // Simpan kategori yang dipilih di localStorage
+            localStorage.setItem('selectedCategory', category);
+            // Redirect ke menu.html
+            window.location.href = 'menu.html';
+        }
+
+        // Fungsi untuk pergi ke detail item
+        function goToItemDetail(itemId) {
+            window.location.href = `menu-detail.html?id=${itemId}`;
+        }
+
+        // Fungsi untuk handle pencarian
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.trim();
+            
+            if (searchTerm) {
+                // Simpan search term di localStorage
+                localStorage.setItem('searchQuery', searchTerm);
+                localStorage.removeItem('selectedCategory'); // Hapus kategori jika ada
+                
+                // Redirect ke menu.html
+                window.location.href = 'menu.html';
+            }
+        }
+
+        // Fungsi untuk handle Enter key di search
+        function handleSearchKeyPress(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        // Load footer
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error loading footer:', error);
+                document.getElementById('footer').innerHTML = '<footer style="background: var(--color-text); color: white; padding: 20px; text-align: center;">Footer failed to load</footer>';
+            });
+
+        // Handle internal links from footer
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a[href^="#"]');
+            if (link) {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                
+                // Cek apakah target ada di halaman ini
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                } else {
+                    // Jika tidak ada, arahkan ke index.html dengan hash
+                    window.location.href = `index.html#${targetId}`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

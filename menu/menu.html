@@ -4,248 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Menu - Kopi Nusantara</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* Main Container */
-        .main-container {
-            max-width: 1200px;
-            margin: 80px auto 0;
-            padding: 40px 20px;
-        }
-
-        /* Header Section */
-        .menu-header {
-            margin-bottom: 30px;
-        }
-
-        .menu-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5em;
-            color: var(--color-text);
-            margin-bottom: 10px;
-        }
-
-        .menu-header p {
-            color: #666;
-            font-size: 1.1em;
-        }
-
-        /* Search Bar */
-        .search-container {
-            width: 100%;
-            max-width: 540px;
-            margin-bottom: 30px;
-        }
-
-        .search-box {
-            display: flex;
-            align-items: center;
-            background-color: var(--bg-secondary);
-            padding: 15px 20px;
-            border-radius: 50px;
-            border: 2px solid transparent;
-            transition: border-color 0.3s;
-        }
-
-        .search-box:focus-within {
-            border-color: var(--color-accent);
-        }
-
-        .search-box i {
-            color: #888;
-            margin-right: 12px;
-            font-size: 1.1em;
-        }
-
-        .search-box input {
-            border: none;
-            background: none;
-            font-size: 1em;
-            color: var(--color-text);
-            width: 100%;
-            outline: none;
-        }
-
-        /* Category Filters */
-        .category-filters {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-
-        .category-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 50px;
-            background: var(--bg-secondary);
-            color: var(--color-text);
-            font-size: 1em;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .category-btn:hover {
-            background: var(--color-accent);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .category-btn.active {
-            background: var(--color-text);
-            color: white;
-        }
-
-        /* Items Counter */
-        .items-counter {
-            color: #666;
-            font-size: 1em;
-            margin-bottom: 30px;
-        }
-
-        /* Menu Grid */
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .menu-item {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .menu-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .popular-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: #674636;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            z-index: 2;
-        }
-
-        .item-image {
-            width: 100%;
-            height: 200px;
-            background: var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .item-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .item-image i {
-            font-size: 3em;
-            color: #ccc;
-        }
-
-        .item-info {
-            padding: 20px;
-        }
-
-        .item-category {
-            color: #888;
-            font-size: 0.85em;
-            margin-bottom: 8px;
-            text-transform: capitalize;
-        }
-
-        .item-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3em;
-            color: var(--color-text);
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .item-description {
-            color: #666;
-            font-size: 0.9em;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .item-price {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: var(--color-text);
-        }
-
-        /* No Results */
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .no-results i {
-            font-size: 4em;
-            color: #ccc;
-            margin-bottom: 20px;
-        }
-
-        .no-results h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8em;
-            color: var(--color-text);
-            margin-bottom: 10px;
-        }
-
-        .no-results p {
-            color: #666;
-            font-size: 1.1em;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .menu-header h1 {
-                font-size: 2em;
-            }
-
-            .category-filters {
-                overflow-x: auto;
-                flex-wrap: nowrap;
-                padding-bottom: 10px;
-            }
-
-            .category-btn {
-                white-space: nowrap;
-            }
-
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -277,7 +38,7 @@
         <div class="search-container">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search menu...">
+                <input type="text" id="searchInput" placeholder="Search menu..." onkeypress="handleSearchKeyPress(event)">
             </div>
         </div>
 
@@ -320,8 +81,6 @@
     </div>
     <div id="footer"></div>
     <script>
-        
-    
         // Menu Data
         const menuItems = [
             {
@@ -330,7 +89,7 @@
                 category: 'coffee',
                 price: 45000,
                 description: 'Our house special latte with smooth espresso and velvety steamed milk, topped with delicate foam art.',
-                image: 'signature.jpg',
+                image: '/menu/Gambar/signature.jpg',
                 popular: true
             },
             {
@@ -339,7 +98,7 @@
                 category: 'coffee',
                 price: 42000,
                 description: 'Classic Italian coffee with equal parts espresso, steamed milk, and milk foam.',
-                image: 'Latte.jpg',
+                image: '/menu/Gambar/Latte.jpg',
                 popular: true
             },
             {
@@ -348,7 +107,7 @@
                 category: 'coffee',
                 price: 48000,
                 description: 'Espresso with vanilla, steamed milk, and drizzled caramel sauce.',
-                image: 'Caramel Macchiato.jpg',
+                image: '/menu/Gambar/Caramel Macchiato.jpg',
                 popular: true
             },
             {
@@ -357,7 +116,7 @@
                 category: 'coffee',
                 price: 35000,
                 description: 'Bold espresso shots with hot water for a clean, strong flavor.',
-                image: 'Iced Americano.jpg',
+                image: '/menu/Gambar/Iced Americano.jpg',
                 popular: false
             },
             {
@@ -366,7 +125,7 @@
                 category: 'tea',
                 price: 45000,
                 description: 'Premium Japanese matcha whisked with steamed milk for a creamy, earthy taste.',
-                image: 'Matcha.jpg',
+                image: '/menu/Gambar/Matcha.jpg',
                 popular: true
             },
             {
@@ -375,7 +134,7 @@
                 category: 'tea',
                 price: 32000,
                 description: 'Classic black tea with bergamot citrus aroma, served hot or iced.',
-                image: 'Earl Grey.jpg',
+                image: '/menu/Gambar/Earl Grey.jpg',
                 popular: false
             },
             {
@@ -384,7 +143,7 @@
                 category: 'tea',
                 price: 30000,
                 description: 'Fragrant jasmine blossoms infused with premium green tea leaves.',
-                image: 'jasmine tea.jpg',
+                image: '/menu/Gambar/jasmine tea.jpg',
                 popular: false
             },
             {
@@ -393,7 +152,7 @@
                 category: 'pastry',
                 price: 28000,
                 description: 'Flaky, buttery French croissant baked fresh daily.',
-                image: 'croissant.jpg',
+                image: '/menu/Gambar/croissant.jpg',
                 popular: true
             },
             {
@@ -402,7 +161,7 @@
                 category: 'pastry',
                 price: 35000,
                 description: 'Sweet pastry filled with almond cream and topped with sliced almonds.',
-                image: 'Almond Danish.jpg',
+                image: '/menu/Gambar/Almond Danish.jpg',
                 popular: false
             },
             {
@@ -411,7 +170,7 @@
                 category: 'pastry',
                 price: 25000,
                 description: 'Rich, moist chocolate muffin with chocolate chips.',
-                image: 'Chocolate Muffin.jpg',
+                image: '/menu/Gambar/Chocolate Muffin.jpg',
                 popular: false
             },
             {
@@ -420,7 +179,7 @@
                 category: 'dessert',
                 price: 55000,
                 description: 'Classic Italian dessert with layers of coffee-soaked ladyfingers and mascarpone cream.',
-                image: 'Tiramisu.jpg',
+                image: '/menu/Gambar/Tiramisu.jpg',
                 popular: true
             },
             {
@@ -429,7 +188,7 @@
                 category: 'dessert',
                 price: 50000,
                 description: 'Creamy New York style cheesecake with graham cracker crust.',
-                image: 'Cheesecake.jpg',
+                image: '/menu/Gambar/Cheesecake.jpg',
                 popular: false
             },
             {
@@ -438,7 +197,7 @@
                 category: 'food',
                 price: 65000,
                 description: 'Triple-decker sandwich with chicken, bacon, lettuce, tomato, and mayo.',
-                image: 'Club Sandwiches.jpg',
+                image: '/menu/Gambar/Club Sandwiches.jpg',
                 popular: true
             },
             {
@@ -447,7 +206,7 @@
                 category: 'food',
                 price: 75000,
                 description: 'Juicy beef patty with cheese, lettuce, tomato, and special sauce.',
-                image: 'burger.jpg',
+                image: '/menu/Gambar/burger.jpg',
                 popular: false
             },
             {
@@ -456,7 +215,7 @@
                 category: 'food',
                 price: 58000,
                 description: 'Spaghetti with garlic, olive oil, and red pepper flakes.',
-                image: 'Aglio Olio.jpg',
+                image: '/menu/Gambar/Aglio Olio.jpg',
                 popular: false
             }
         ];
@@ -526,6 +285,9 @@
                 btn.classList.add('active');
                 currentCategory = btn.dataset.category;
                 renderMenu();
+                
+                // Simpan kategori yang dipilih
+                localStorage.setItem('selectedCategory', currentCategory);
             });
         });
 
@@ -533,16 +295,53 @@
         document.getElementById('searchInput').addEventListener('input', (e) => {
             searchQuery = e.target.value;
             renderMenu();
+            
+            // Simpan search query
+            localStorage.setItem('searchQuery', searchQuery);
         });
+
+        // Handle Enter key in search
+        function handleSearchKeyPress(event) {
+            if (event.key === 'Enter') {
+                renderMenu();
+            }
+        }
 
         // Go to detail page
         function goToDetail(itemId) {
             window.location.href = `menu-detail.html?id=${itemId}`;
         }
 
-        // Initial render
-        renderMenu();
+        // Apply saved filters from localStorage
+        function applySavedFilters() {
+            const savedCategory = localStorage.getItem('selectedCategory');
+            const savedSearch = localStorage.getItem('searchQuery');
+            
+            if (savedCategory) {
+                // Aktifkan button kategori yang sesuai
+                const categoryBtn = document.querySelector(`.category-btn[data-category="${savedCategory}"]`);
+                if (categoryBtn) {
+                    categoryBtn.click(); // Trigger click event
+                }
+                currentCategory = savedCategory;
+            }
+            
+            if (savedSearch) {
+                document.getElementById('searchInput').value = savedSearch;
+                searchQuery = savedSearch;
+            }
+            
+            renderMenu();
+            
+            // Clear localStorage setelah diterapkan
+            localStorage.removeItem('selectedCategory');
+            localStorage.removeItem('searchQuery');
+        }
 
+        // Initial render dengan filter yang disimpan
+        applySavedFilters();
+
+        // Load footer
         fetch('footer.html')
             .then(response => response.text())
             .then(data => {
@@ -550,18 +349,25 @@
             })
             .catch(error => {
                 console.error('Error loading footer:', error);
+                document.getElementById('footer').innerHTML = '<footer style="background: var(--color-text); color: white; padding: 20px; text-align: center;">Footer failed to load</footer>';
             });
 
         // Handle internal links from footer
         document.addEventListener('click', function(e) {
-            if (e.target.closest('a[href^="#"]')) {
+            const link = e.target.closest('a[href^="#"]');
+            if (link) {
                 e.preventDefault();
-                const targetId = e.target.closest('a').getAttribute('href').substring(1);
+                const targetId = link.getAttribute('href').substring(1);
+                
+                // Cek apakah target ada di halaman ini
                 const targetElement = document.getElementById(targetId);
                 if (targetElement) {
                     targetElement.scrollIntoView({
                         behavior: 'smooth'
                     });
+                } else {
+                    // Jika tidak ada, arahkan ke index.html dengan hash
+                    window.location.href = `index.html#${targetId}`;
                 }
             }
         });
