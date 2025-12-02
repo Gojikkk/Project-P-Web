@@ -17,6 +17,8 @@ while ($row = mysqli_fetch_assoc($result)) {
 
     // Convert price ke integer
     $row['price'] = (int)$row['price'];
+    $row['id'] = (int)$row['id'];   
+    $row['price'] = (int)$row['price']; 
     
     $menuData[] = $row;
 }

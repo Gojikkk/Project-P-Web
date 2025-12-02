@@ -38,15 +38,13 @@
         <div class="search-container">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search menu..." onkeypress="handleSearchKeyPress(event)">
+                <input type="text" id="searchInput" placeholder="Search menu...">
             </div>
         </div>
 
         <!-- Category Filters -->
         <div class="category-filters">
-            <button class="category-btn active" data-category="all">
-                All
-            </button>
+            <button class="category-btn active" data-category="all">All</button>
             <button class="category-btn" data-category="coffee">
                 <i class="fas fa-coffee"></i> Coffee
             </button>
@@ -80,6 +78,7 @@
         </div>
     </div>
     <div id="footer"></div>
+    
     <script>
         // Menu Data
         let menuItems = [];
@@ -149,9 +148,6 @@
                 btn.classList.add('active');
                 currentCategory = btn.dataset.category;
                 renderMenu();
-                
-                // Simpan kategori yang dipilih
-                localStorage.setItem('selectedCategory', currentCategory);
             });
         });
 
@@ -159,92 +155,40 @@
         document.getElementById('searchInput').addEventListener('input', (e) => {
             searchQuery = e.target.value;
             renderMenu();
-            
-            // Simpan search query
-            localStorage.setItem('searchQuery', searchQuery);
         });
 
-        // Handle Enter key in search
-        function handleSearchKeyPress(event) {
-            if (event.key === 'Enter') {
-                renderMenu();
-            }
-        }
-
-        // Go to detail page
+        // Go to detail page - PERBAIKAN INI YANG PENTING
         function goToDetail(itemId) {
-            window.location.href = `menu-detail.html?id=${itemId}`;
+            // Redirect ke folder detail dengan ID yang benar
+            window.location.href = `../order/detail/menu-detail.html?id=${itemId}`;
         }
 
-        // Apply saved filters from localStorage
-        function applySavedFilters() {
-            const savedCategory = localStorage.getItem('selectedCategory');
-            const savedSearch = localStorage.getItem('searchQuery');
-            
-            if (savedCategory) {
-                // Aktifkan button kategori yang sesuai
-                const categoryBtn = document.querySelector(`.category-btn[data-category="${savedCategory}"]`);
-                if (categoryBtn) {
-                    categoryBtn.click(); // Trigger click event
-                }
-                currentCategory = savedCategory;
-            }
-            
-            if (savedSearch) {
-                document.getElementById('searchInput').value = savedSearch;
-                searchQuery = savedSearch;
-            }
-            
-            renderMenu();
-            
-            // Clear localStorage setelah diterapkan
-            localStorage.removeItem('selectedCategory');
-            localStorage.removeItem('searchQuery');
-        }
-
+        // Load menu from backend
         function loadMenu() {
             fetch("menu.php") 
             .then(res => res.json())
             .then(data => {
                 menuItems = data;
-                applySavedFilters();
+                renderMenu();
             })
-            .catch(err => console.error("Error loading menu:", err));
+            .catch(err => {
+                console.error("Error loading menu:", err);
+                alert("Gagal memuat menu");
+            });
         }
 
-        // Initial render dengan filter yang disimpan
+        // Initial load
         loadMenu();
 
         // Load footer
-        fetch('footer.html')
+        fetch('../index/footer.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('footer').innerHTML = data;
             })
             .catch(error => {
                 console.error('Error loading footer:', error);
-                document.getElementById('footer').innerHTML = '<footer style="background: var(--color-text); color: white; padding: 20px; text-align: center;">Footer failed to load</footer>';
             });
-
-        // Handle internal links from footer
-        document.addEventListener('click', function(e) {
-            const link = e.target.closest('a[href^="#"]');
-            if (link) {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                
-                // Cek apakah target ada di halaman ini
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                } else {
-                    // Jika tidak ada, arahkan ke index.html dengan hash
-                    window.location.href = `index.html#${targetId}`;
-                }
-            }
-        });
     </script>
 </body>
 </html>

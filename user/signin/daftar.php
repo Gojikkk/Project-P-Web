@@ -71,7 +71,7 @@ if (isset($_POST['daftar'])) {
 
         if ($result) {
             $_SESSION['success'] = "Pendaftaran berhasil! Silakan login.";
-            header("Location: ../proses login/login.html");  // Sesuaikan path jika perlu
+            header("Location: ../login/login.html");  // Sesuaikan path jika perlu
             exit();
         } else {
             $error_message = "Pendaftaran gagal: " . mysqli_error($conn);

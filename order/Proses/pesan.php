@@ -16,6 +16,7 @@ if (isset($_POST['pesan'])){
     $id_user = $_SESSION['Id_user'];
     $name = $_SESSION['Username'];
     $no_telepon = $_SESSION['No_Telepon'];
+    $email = $_SESSION['Email'];
 
 // Ambil data dari form
     $id_menu = htmlentities(strip_tags(trim ($_POST['Id_Menu'])));
@@ -31,6 +32,18 @@ if (isset($_POST['pesan'])){
 
     // Validasi input
     $error_massage = "";
+
+    if (empty($error_massage)){
+        $query_data = "SELECT Username, No_Telepon, Email FROM user WHERE Id_user = '$id_user'";
+        $result_data = mysqli_query($conn, $query_data);
+
+        if (mysqli_num_rows($result_data) > 0){
+            $data = mysqli_fetch_assoc($result_data);
+            $name = $data['Username'];
+            $no_telepon = $data['No_Telepon'];
+            $email = $data['Email'];
+        }
+    }
 
     // ngambil stok menu
 if (empty($error_massage)){
