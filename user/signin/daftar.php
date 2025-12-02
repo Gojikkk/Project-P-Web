@@ -1,97 +1,87 @@
 <?php
 session_start();
-include '../../connection/connection.php';
+include '../../connection/connection.php';  // Pastikan path ini benar di XAMPP Anda
 
-if (isset($_POST['daftar'])){
-    $username = htmlentities(strip_tags(trim ($_POST['username'])));
-    $Password = htmlentities(strip_tags(trim ($_POST['Password'])));
-    $Telp = htmlentities(strip_tags(trim ($_POST['No_Telp'])));
-    $email = htmlentities(strip_tags(trim ($_POST['Email'])));
+if (isset($_POST['daftar'])) {
+    $username = htmlentities(strip_tags(trim($_POST['username'])));
+    $Password = htmlentities(strip_tags(trim($_POST['Password'])));
+    $Telp = htmlentities(strip_tags(trim($_POST['No_Telp'])));
+    $email = htmlentities(strip_tags(trim($_POST['Email'])));
 
-    $error_massage = "";
+    $error_message = "";  // Perbaiki nama variabel (sebelumnya $error_massage)
 
-
-    //validasi input kosong
-    if (empty($username) && empty($Password) && empty($Telp) && empty($email)){
-        $error_massage = "Semua data harus diisi";
-    } elseif (!$username){
-        $error_massage = "Username tidak boleh kosong";
-    } elseif (!$Password){
-        $error_massage = "Password tidak boleh kosong";
-    } elseif (!$Telp){
-        $error_massage = "No Telp tidak boleh kosong";
-    } elseif (!$email){
-        $error_massage = "Email tidak boleh kosong";
-}
-
-    if (empty($error_massage) && strlen($Password) < 8){
-        $error_massage = "Password minimal 6 karakter";
+    // Validasi input kosong
+    if (empty($username) && empty($Password) && empty($Telp) && empty($email)) {
+        $error_message = "Semua data harus diisi";
+    } elseif (empty($username)) {
+        $error_message = "Username tidak boleh kosong";
+    } elseif (empty($Password)) {
+        $error_message = "Password tidak boleh kosong";
+    } elseif (empty($Telp)) {
+        $error_message = "No Telp tidak boleh kosong";
+    } elseif (empty($email)) {
+        $error_message = "Email tidak boleh kosong";
     }
 
-    //validasi format input
-    if (!is_numeric($Telp)){
-        $error_massage = "Nomor Telepon harus berupa angka";
+    // Validasi panjang password (minimal 8, sesuai HTML)
+    if (empty($error_message) && strlen($Password) < 8) {
+        $error_message = "Password minimal 8 karakter";
     }
 
-    if (filter_var($email, FILTER_VALIDATE_EMAIL) === false){
-        $error_massage = "Format email tidak valid";
+    // Validasi format input (hanya jika tidak ada error sebelumnya)
+    if (empty($error_message)) {
+        if (!is_numeric($Telp)) {
+            $error_message = "Nomor Telepon harus berupa angka";
+        } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            $error_message = "Format email tidak valid";
+        }
     }
 
-    //cek username sudah ada atau belum
-    $username = mysqli_real_escape_string($conn, $username);
-    $query_username = "SELECT * FROM user WHERE Username='$username' LIMIT 1";
-    $result_username = mysqli_query($conn, $query_username);
-    $num_rows_username = mysqli_num_rows($result_username);
+    // Cek username, telp, email sudah ada (hanya jika tidak ada error sebelumnya)
+    if (empty($error_message)) {
+        $username = mysqli_real_escape_string($conn, $username);
+        $query_username = "SELECT * FROM user WHERE Username='$username' LIMIT 1";
+        $result_username = mysqli_query($conn, $query_username);
+        $num_rows_username = mysqli_num_rows($result_username);
 
+        $Telp = mysqli_real_escape_string($conn, $Telp);
+        $query_telp = "SELECT * FROM user WHERE No_Telp='$Telp' LIMIT 1";
+        $result_telp = mysqli_query($conn, $query_telp);
+        $num_rows_telp = mysqli_num_rows($result_telp);
 
-    //cek No_Telp sudah ada atau belum
-    $Telp = mysqli_real_escape_string($conn, $Telp);
-    $query_telp = "SELECT * FROM user WHERE No_Telp='$Telp' LIMIT 1";
-    $result_telp = mysqli_query($conn, $query_telp);
-    $num_rows_telp = mysqli_num_rows($result_telp);
+        $email = mysqli_real_escape_string($conn, $email);
+        $query_email = "SELECT * FROM user WHERE Email='$email' LIMIT 1";
+        $result_email = mysqli_query($conn, $query_email);
+        $num_rows_email = mysqli_num_rows($result_email);
 
-
-    //cek Email sudah ada atau belum
-    $email = mysqli_real_escape_string($conn, $email);
-    $query_email = "SELECT * FROM user WHERE Email='$email' LIMIT 1";
-    $result_email = mysqli_query($conn, $query_email);  
-    $num_rows_email = mysqli_num_rows($result_email);
-
-    if ($num_rows_username >= 1){
-        $error_massage = "Username sudah terdaftar";
+        if ($num_rows_username >= 1) {
+            $error_message = "Username sudah terdaftar";
+        } elseif ($num_rows_telp >= 1) {
+            $error_message = "Nomor Telepon sudah terdaftar";
+        } elseif ($num_rows_email >= 1) {
+            $error_message = "Email sudah terdaftar";
+        }
     }
 
-    if ($num_rows_telp >= 1){
-        $error_massage = "Nomor Telepon sudah terdaftar";
+    // Jika tidak ada error, insert data
+    if (empty($error_message)) {
+        $hashed_Password = password_hash($Password, PASSWORD_DEFAULT);  // Hash password
+        $query = "INSERT INTO user (Username, Password, No_Telp, Email) VALUES ('$username', '$hashed_Password', '$Telp', '$email')";
+        $result = mysqli_query($conn, $query);
+
+        if ($result) {
+            $_SESSION['success'] = "Pendaftaran berhasil! Silakan login.";
+            header("Location: ../proses login/login.html");  // Sesuaikan path jika perlu
+            exit();
+        } else {
+            $error_message = "Pendaftaran gagal: " . mysqli_error($conn);
+        }
     }
 
-    if ($num_rows_email >= 1){
-        $error_massage = "Email sudah terdaftar";
-    }
-
-    if ($error_massage == ""){
-        //insert data ke database
-        $username  = mysqli_real_escape_string($conn, $username);
-        $hashed_Password = password_hash($Password, PASSWORD_DEFAULT);
-        $Telp      = mysqli_real_escape_string($conn, $Telp);
-        $email     = mysqli_real_escape_string($conn, $email);
-    
-
-    $query = "INSERT INTO user (Username, Password, No_Telp, Email) VALUES ('$username', '$hashed_Password', '$Telp', '$email')";
-    $result = mysqli_query($conn, $query);
-
-    if ($result){
-        $_SESSION['success'] = "Pendaftaran berhasil! Silakan login.";
-        header("Location: ../proses login/login.html");
-        exit();
-    } else {
-        die ("Pendaftaran gagal: " . mysqli_error($conn));
-    }
-}
-
-if ($error_massage != ""){
-        $encoded_error = urlencode($error_massage);
-        header("Location: register.html?error=" . $encoded_error);
+    // Jika ada error, redirect kembali ke register.html dengan error
+    if (!empty($error_message)) {
+        $encoded_error = urlencode($error_message);
+        header("Location: register.html?error=" . $encoded_error);  // Redirect ke register.html
         exit();
     }
 }
