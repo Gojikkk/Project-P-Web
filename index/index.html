@@ -143,7 +143,7 @@
             <div class="item-card-popular" onclick="goToItemDetail(1)">
                 <div class="item-badge">Popular</div>
                 <div class="item-image">
-                    <img src="signature.jpg" alt="Signature Latte">
+                    <img src="../menu/Gambar/signature.jpg">
                 </div>
                 <div class="item-info-popular">
                     <h3>Signature Latte</h3>
@@ -156,7 +156,7 @@
             <div class="item-card-popular" onclick="goToItemDetail(2)">
                 <div class="item-badge">Popular</div>
                 <div class="item-image">
-                    <img src="Latte.jpg" alt="Cappuccino">
+                    <img src="../menu/Gambar/signature.jpg">
                 </div>
                 <div class="item-info-popular">
                     <h3>Cappuccino</h3>
@@ -169,7 +169,7 @@
             <div class="item-card-popular" onclick="goToItemDetail(3)">
                 <div class="item-badge">Popular</div>
                 <div class="item-image">
-                    <img src="Caramel Macchiato.jpg" alt="Caramel Macchiato">
+                    <img src="../php/index.php?id=3">
                 </div>
                 <div class="item-info-popular">
                     <h3>Caramel Macchiato</h3>
@@ -182,7 +182,7 @@
             <div class="item-card-popular" onclick="goToItemDetail(5)">
                 <div class="item-badge">Popular</div>
                 <div class="item-image">
-                    <img src="Matcha.jpg" alt="Matcha Latte">
+                    <img src="../php/index.php?id=5">
                 </div>
                 <div class="item-info-popular">
                     <h3>Matcha Latte</h3>
@@ -207,12 +207,12 @@
             // Simpan kategori yang dipilih di localStorage
             localStorage.setItem('selectedCategory', category);
             // Redirect ke menu.html
-            window.location.href = 'menu.html';
+            window.location.href = '../menu/menu.html';
         }
 
         // Fungsi untuk pergi ke detail item
         function goToItemDetail(itemId) {
-            window.location.href = `menu-detail.html?id=${itemId}`;
+            window.location.href = `../menu/menu-detail.html?id=${itemId}`;
         }
 
         // Fungsi untuk handle pencarian
