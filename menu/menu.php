@@ -5,15 +5,13 @@ include '../connection/connection.php';
 header('Content-Type: application/json');
 
 // ambil menu dari DB
-$query = "SELECT Id_Menu as id, Nama_Menu as name, Kategori as category, Deskripsi as description, Harga as price /*, Popular as popular*/ FROM menu";
+$query = "SELECT Id_Menu as id, Nama_Menu as name, Kategori as category, Deskripsi as description, Harga as price, Gambar as image /*, Popular as popular*/ FROM menu";
 $result = mysqli_query($conn, $query);
 
 $menuData = [];
 while ($row = mysqli_fetch_assoc($result)) {
     // Generate image path based on name
-    $imageName = strtolower(str_replace(' ', '', $row['name'])) . '.jpg';
-    $row['image'] = '/menu/Gambar/' . $imageName;
-
+    $row['image'] = 'Gambar/' . $row['image'];
     // Convert popular ke boolean
     /*$row['popular'] = $row['popular'] == 1 ? true : false;*/
 
