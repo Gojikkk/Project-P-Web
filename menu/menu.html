@@ -82,143 +82,7 @@
     <div id="footer"></div>
     <script>
         // Menu Data
-        const menuItems = [
-            {
-                id: 1,
-                name: 'Signature Latte',
-                category: 'coffee',
-                price: 45000,
-                description: 'Our house special latte with smooth espresso and velvety steamed milk, topped with delicate foam art.',
-                image: '/menu/Gambar/signature.jpg',
-                popular: true
-            },
-            {
-                id: 2,
-                name: 'Cappuccino',
-                category: 'coffee',
-                price: 42000,
-                description: 'Classic Italian coffee with equal parts espresso, steamed milk, and milk foam.',
-                image: '/menu/Gambar/Latte.jpg',
-                popular: true
-            },
-            {
-                id: 3,
-                name: 'Caramel Macchiato',
-                category: 'coffee',
-                price: 48000,
-                description: 'Espresso with vanilla, steamed milk, and drizzled caramel sauce.',
-                image: '/menu/Gambar/Caramel Macchiato.jpg',
-                popular: true
-            },
-            {
-                id: 4,
-                name: 'Americano',
-                category: 'coffee',
-                price: 35000,
-                description: 'Bold espresso shots with hot water for a clean, strong flavor.',
-                image: '/menu/Gambar/Iced Americano.jpg',
-                popular: false
-            },
-            {
-                id: 5,
-                name: 'Matcha Latte',
-                category: 'tea',
-                price: 45000,
-                description: 'Premium Japanese matcha whisked with steamed milk for a creamy, earthy taste.',
-                image: '/menu/Gambar/Matcha.jpg',
-                popular: true
-            },
-            {
-                id: 6,
-                name: 'Earl Grey',
-                category: 'tea',
-                price: 32000,
-                description: 'Classic black tea with bergamot citrus aroma, served hot or iced.',
-                image: '/menu/Gambar/Earl Grey.jpg',
-                popular: false
-            },
-            {
-                id: 7,
-                name: 'Jasmine Green Tea',
-                category: 'tea',
-                price: 30000,
-                description: 'Fragrant jasmine blossoms infused with premium green tea leaves.',
-                image: '/menu/Gambar/jasmine tea.jpg',
-                popular: false
-            },
-            {
-                id: 8,
-                name: 'Butter Croissant',
-                category: 'pastry',
-                price: 28000,
-                description: 'Flaky, buttery French croissant baked fresh daily.',
-                image: '/menu/Gambar/croissant.jpg',
-                popular: true
-            },
-            {
-                id: 9,
-                name: 'Almond Danish',
-                category: 'pastry',
-                price: 35000,
-                description: 'Sweet pastry filled with almond cream and topped with sliced almonds.',
-                image: '/menu/Gambar/Almond Danish.jpg',
-                popular: false
-            },
-            {
-                id: 10,
-                name: 'Chocolate Muffin',
-                category: 'pastry',
-                price: 25000,
-                description: 'Rich, moist chocolate muffin with chocolate chips.',
-                image: '/menu/Gambar/Chocolate Muffin.jpg',
-                popular: false
-            },
-            {
-                id: 11,
-                name: 'Tiramisu',
-                category: 'dessert',
-                price: 55000,
-                description: 'Classic Italian dessert with layers of coffee-soaked ladyfingers and mascarpone cream.',
-                image: '/menu/Gambar/Tiramisu.jpg',
-                popular: true
-            },
-            {
-                id: 12,
-                name: 'Cheesecake',
-                category: 'dessert',
-                price: 50000,
-                description: 'Creamy New York style cheesecake with graham cracker crust.',
-                image: '/menu/Gambar/Cheesecake.jpg',
-                popular: false
-            },
-            {
-                id: 13,
-                name: 'Club Sandwich',
-                category: 'food',
-                price: 65000,
-                description: 'Triple-decker sandwich with chicken, bacon, lettuce, tomato, and mayo.',
-                image: '/menu/Gambar/Club Sandwiches.jpg',
-                popular: true
-            },
-            {
-                id: 14,
-                name: 'Beef Burger',
-                category: 'food',
-                price: 75000,
-                description: 'Juicy beef patty with cheese, lettuce, tomato, and special sauce.',
-                image: '/menu/Gambar/burger.jpg',
-                popular: false
-            },
-            {
-                id: 15,
-                name: 'Pasta Aglio Olio',
-                category: 'food',
-                price: 58000,
-                description: 'Spaghetti with garlic, olive oil, and red pepper flakes.',
-                image: '/menu/Gambar/Aglio Olio.jpg',
-                popular: false
-            }
-        ];
+        let menuItems = [];
 
         // State
         let currentCategory = 'all';
@@ -338,8 +202,18 @@
             localStorage.removeItem('searchQuery');
         }
 
+        function loadMenu() {
+            fetch("menu.php") 
+            .then(res => res.json())
+            .then(data => {
+                menuItems = data;
+                applySavedFilters();
+            })
+            .catch(err => console.error("Error loading menu:", err));
+        }
+
         // Initial render dengan filter yang disimpan
-        applySavedFilters();
+        loadMenu();
 
         // Load footer
         fetch('footer.html')
