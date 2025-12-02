@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Insert ke tabel orders (sesuaikan dengan struktur tabel Anda)
             $insertQuery = "INSERT INTO pesanan (ID_User, ID_Menu, Jumlah_Pesanan, Harga, Total_Harga) 
-                            VALUES (?, ?, ?, ?, ?, 'pending', NOW())";
+                            VALUES (?, ?, ?, ?, ?)";
             $insertStmt = mysqli_prepare($conn, $insertQuery);
             mysqli_stmt_bind_param($insertStmt, "iiiii", $userId, $menuId, $quantity, $price, $total);
             
