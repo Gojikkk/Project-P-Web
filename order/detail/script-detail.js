@@ -28,6 +28,7 @@ function getProductIdFromURL() {
 // Load all menu items from backend
 async function loadAllMenuItems() {
     try {
+        // PERBAIKAN: Path ke menu.php dari order/detail/ ke menu/
         const response = await fetch('../../menu/menu.php');
         const data = await response.json();
         
@@ -81,7 +82,7 @@ async function calculateTotalFromBackend() {
 async function sendOrderToBackend() {
     if (!productId) {
         alert('Product ID tidak valid');
-        return null;
+        return false;
     }
 
     try {
@@ -104,13 +105,6 @@ async function sendOrderToBackend() {
         if (data.success) {
             return data;
         } else {
-            // FIXED: Check if user needs to login
-            if (data.needLogin) {
-                alert(data.message);
-                window.location.href = '../../login/login.html';
-                return null;
-            }
-            
             alert('Error: ' + data.message);
             return null;
         }
@@ -150,9 +144,11 @@ function displayProductDetails() {
     // Update category
     document.getElementById('categoryName').textContent = currentProduct.category;
     
-    // Update image
+    // Update image - PERBAIKAN: Path dari order/detail/ ke menu/Gambar/
     const imageContainer = document.getElementById('productImage');
     if (currentProduct.image) {
+        // Gambar path dari menu.php adalah 'Gambar/filename.jpg'
+        // Dari order/detail/ folder, kita perlu '../../menu/Gambar/filename.jpg'
         const imagePath = '../../menu/' + currentProduct.image;
         imageContainer.innerHTML = `<img src="${imagePath}" alt="${currentProduct.name}">`;
     } else {
