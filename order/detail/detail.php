@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     $action = isset($input['action']) ? $input['action'] : '';
     
-    // ACTION 1: Calculate Total
+    // ACTION: Calculate Total (hanya hitung, tidak insert)
     if ($action === 'calculate') {
         $menuId = isset($input['menuId']) ? (int)$input['menuId'] : 0;
         $quantity = isset($input['quantity']) ? (int)$input['quantity'] : 1;
@@ -57,14 +57,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // ACTION 2: Insert Order
     elseif ($action === 'order') {
+        // Log untuk debugging
+        error_log("ORDER ACTION - Session ID: " . session_id());
+        error_log("ORDER ACTION - Session Data: " . print_r($_SESSION, true));
+        
         $menuId = isset($input['menuId']) ? (int)$input['menuId'] : 0;
         $quantity = isset($input['quantity']) ? (int)$input['quantity'] : 1;
         $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
         
+        error_log("ORDER ACTION - User ID: " . ($userId ?? 'NULL'));
+        error_log("ORDER ACTION - Menu ID: $menuId");
+        error_log("ORDER ACTION - Quantity: $quantity");
+        
         if ($menuId <= 0 || $quantity <= 0) {
             echo json_encode([
                 'success' => false,
-                'message' => 'Invalid menu ID or quantity'
+                'message' => 'Invalid menu ID or quantity',
+                'debug' => [
+                    'menuId' => $menuId,
+                    'quantity' => $quantity
+                ]
+            ]);
+            exit;
+        }
+        
+        // FIXED: Check if user is logged in
+        if ($userId === null || $userId === '' || $userId === 0) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'User tidak login. Silakan login terlebih dahulu.',
+                'needLogin' => true,
+                'debug' => [
+                    'sessionId' => session_id(),
+                    'userId' => $userId,
+                    'sessionData' => $_SESSION
+                ]
             ]);
             exit;
         }
@@ -90,21 +117,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mysqli_stmt_bind_param($insertStmt, "iiii", $userId, $menuId, $quantity, $total);
 
             if (mysqli_stmt_execute($insertStmt)) {
+                $orderId = mysqli_insert_id($conn);
+                
+                error_log("ORDER SUCCESS - Order ID: $orderId");
+                
                 echo json_encode([
                     'success' => true,
                     'message' => 'Order berhasil ditambahkan',
-                    'orderId' => mysqli_insert_id($conn),
+                    'orderId' => $orderId,
                     'menuId' => $menuId,
                     'menuName' => $menuName,
                     'quantity' => $quantity,
                     'price' => $price,
                     'total' => $total,
-                    'formattedTotal' => 'Rp ' . number_format($total, 0, ',', '.')
+                    'formattedTotal' => 'Rp ' . number_format($total, 0, ',', '.'),
+                    'tanggalPesanan' => $currentDate
                 ]);
             } else {
+                $errorMsg = mysqli_error($conn);
+                error_log("ORDER ERROR - MySQL Error: $errorMsg");
+                
                 echo json_encode([
                     'success' => false,
-                    'message' => 'Gagal menambahkan order: ' . mysqli_error($conn)
+                    'message' => 'Gagal menambahkan order: ' . $errorMsg,
+                    'debug' => [
+                        'error' => $errorMsg,
+                        'userId' => $userId,
+                        'menuId' => $menuId,
+                        'quantity' => $quantity,
+                        'total' => $total
+                    ]
                 ]);
             }
         } else {
@@ -127,7 +169,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // GET: Ambil semua menu
 else {
-    $query = "SELECT ID_Menu as id, Nama_Menu as name, Kategori as category, Deskripsi as description, Harga as price, Gambar as image FROM menu";
+    $query = "SELECT ID_Menu as id, Nama_Menu as name, Kategori as category, 
+              Deskripsi as description, Harga as price, Gambar as image 
+              FROM menu";
     $result = mysqli_query($conn, $query);
     
     $menuData = [];

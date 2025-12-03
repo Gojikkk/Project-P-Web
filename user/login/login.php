@@ -1,10 +1,18 @@
 <?php
+// ✅ Clear output buffer dulu sebelum return JSON
+ob_start();
 session_start();
-include '../../connection/connection.php'; 
+include '../../connection/connection.php';
+
+// ✅ Clear any previous output
+ob_clean();
+
+// ✅ Set header JSON
+header('Content-Type: application/json');
 
 if (isset($_POST['login'])) {
     // Ambil data dari form
-    $email = trim($_POST['email']);
+    $email = trim($_POST['Email']);
     $Password = trim($_POST['Password']);
     
     $error_message = "";
@@ -22,20 +30,26 @@ if (isset($_POST['login'])) {
     
     // Kalau ada error, kirim ke JavaScript
     if (!empty($error_message)) {
-        echo $error_message;
+        echo json_encode([
+            'success' => false,
+            'message' => $error_message
+        ]);
         exit();
     }
     
     // Sanitize input
     $email = mysqli_real_escape_string($conn, $email);
     
-    // Query database - CUMA CARI EMAIL (bukan password!)
-    $query = "SELECT * FROM user WHERE email='$email' LIMIT 1";
+    // Query database - AMBIL SEMUA KOLOM
+    $query = "SELECT * FROM user WHERE Email='$email' LIMIT 1";
     $result = mysqli_query($conn, $query);
     
     // Cek apakah query berhasil
     if (!$result) {
-        echo "Terjadi kesalahan database";
+        echo json_encode([
+            'success' => false,
+            'message' => 'Terjadi kesalahan database'
+        ]);
         exit();
     }
     
@@ -47,21 +61,44 @@ if (isset($_POST['login'])) {
         
         // Verifikasi password dengan hash di database
         if (password_verify($Password, $user['Password'])) {
+            // Cek nama kolom ID (bisa ID_User atau lainnya)
+            $userId = isset($user['ID_User']) ? $user['ID_User'] : (isset($user['id']) ? $user['id'] : null);
+            
             // Login berhasil - set session
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['email'] = $user['email'];
+            $_SESSION['ID_User'] = $userId;
+            $_SESSION['Email'] = $user['Email'];
             $_SESSION['logged_in'] = true;
             
-            // Redirect ke home
-            header("Location: ../../menu/menu.html");
+            // ✅ HAPUS PASSWORD DARI DATA YANG DIKIRIM KE FRONTEND
+            unset($user['Password']);
+            
+            // ✅ Return JSON success dengan DATA USER
+            echo json_encode([
+                'success' => true,
+                'message' => 'Login berhasil',
+                'redirect' => '../../menu/menu.html',
+                'userData' => $user // Kirim data user TANPA password
+            ]);
             exit();
         } else {
-            echo "Email atau Password salah";
+            echo json_encode([
+                'success' => false,
+                'message' => 'Email atau Password salah'
+            ]);
             exit();
         }
     } else {
-        echo "Email atau Password salah";
+        echo json_encode([
+            'success' => false,
+            'message' => 'Email atau Password salah'
+        ]);
         exit();
     }
+} else {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Invalid request'
+    ]);
+    exit();
 }
 ?>
