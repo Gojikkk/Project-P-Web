@@ -1,7 +1,6 @@
 <?php
 session_start();
-include '../connection/connection.php';
-
+include '../../connection/connection.php';
 header('Content-Type: application/json');
 
 // Log request method
@@ -120,15 +119,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $menuName = $row['Nama_Menu'];
             $total = calculateTotal($price, $quantity);
             
-            // FIXED: Add Tanggal_Pesanan field
-            $currentDate = date('Y-m-d H:i:s');
-            
-            // Insert ke tabel pesanan dengan field yang lengkap
-            $insertQuery = "INSERT INTO pesanan (ID_User, ID_Menu, Jumlah_Pesanan, Total_Harga, Tanggal_Pesanan) 
-                            VALUES (?, ?, ?, ?, ?)";
+            // Insert ke tabel orders (sesuaikan dengan struktur tabel Anda)
+            $insertQuery = "INSERT INTO pesanan 
+                (ID_User, ID_Menu, Jumlah_Pesanan, Tanggal_Pesanan, Total_Harga)
+                VALUES (?, ?, ?, NOW(), ?)";
+
             $insertStmt = mysqli_prepare($conn, $insertQuery);
-            mysqli_stmt_bind_param($insertStmt, "iiiis", $userId, $menuId, $quantity, $total, $currentDate);
-            
+            mysqli_stmt_bind_param($insertStmt, "iiii", $userId, $menuId, $quantity, $total);
+
             if (mysqli_stmt_execute($insertStmt)) {
                 $orderId = mysqli_insert_id($conn);
                 

@@ -49,16 +49,18 @@ async function calculateTotalFromBackend() {
     }
 
     try {
-    const response = await fetch('../../menu/menu.php', {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        action: 'order',
-        menuId: productId,
-        quantity: currentQuantity
-    })
-});
+        // PERBAIKAN: Path ke menu.php
+        const response = await fetch('detail.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: 'calculate',
+                menuId: productId,
+                quantity: currentQuantity
+            })
+        });
 
         const data = await response.json();
         console.log('Calculate response:', data);
@@ -83,16 +85,18 @@ async function sendOrderToBackend() {
     }
 
     try {
-        const response = await fetch('../../menu/menu.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',   // ⬅⬅⬅ FIX PALING PENTING
-        body: JSON.stringify({
-        action: 'order',
-        menuId: productId,
-        quantity: currentQuantity
-    })
-});
+        // PERBAIKAN: Path ke menu.php
+        const response = await fetch('detail.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: 'order',
+                menuId: productId,
+                quantity: currentQuantity
+            })
+        });
 
         const data = await response.json();
         console.log('Order response:', data);
@@ -266,23 +270,10 @@ async function orderNow() {
     const orderData = await sendOrderToBackend();
 
     if (orderData) {
-        // FIXED: Correct path to checkout
-        // From: order/detail/ 
-        // To: order/Proses/checkout.html
+        alert(`Order berhasil!\n\nMenu: ${orderData.menuName}\nQuantity: ${orderData.quantity}\nTotal: ${orderData.formattedTotal}`);
         
-        // Store order data in sessionStorage for checkout page
-        sessionStorage.setItem('currentOrder', JSON.stringify({
-            orderId: orderData.orderId,
-            menuId: orderData.menuId,
-            menuName: orderData.menuName,
-            quantity: orderData.quantity,
-            price: orderData.price,
-            total: orderData.total,
-            formattedTotal: orderData.formattedTotal
-        }));
-        
-        // Redirect to checkout page
-        window.location.href = `../Proses/checkout.html?orderId=${orderData.orderId}`;
+        // Redirect to order confirmed page
+        window.location.href = `../Proses/order-confirmed.html?orderId=${orderData.orderId}`;
     } else {
         orderBtn.innerHTML = originalHTML;
         orderBtn.disabled = false;
