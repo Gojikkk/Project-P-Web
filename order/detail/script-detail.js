@@ -28,7 +28,6 @@ function getProductIdFromURL() {
 // Load all menu items from backend
 async function loadAllMenuItems() {
     try {
-        // PERBAIKAN: Path ke menu.php dari order/detail/ ke menu/
         const response = await fetch('../../menu/menu.php');
         const data = await response.json();
         
@@ -50,18 +49,16 @@ async function calculateTotalFromBackend() {
     }
 
     try {
-        // PERBAIKAN: Path ke menu.php
-        const response = await fetch('../../menu/menu.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                action: 'calculate',
-                menuId: productId,
-                quantity: currentQuantity
-            })
-        });
+    const response = await fetch('../../menu/menu.php', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        action: 'order',
+        menuId: productId,
+        quantity: currentQuantity
+    })
+});
 
         const data = await response.json();
         console.log('Calculate response:', data);
@@ -82,22 +79,20 @@ async function calculateTotalFromBackend() {
 async function sendOrderToBackend() {
     if (!productId) {
         alert('Product ID tidak valid');
-        return false;
+        return null;
     }
 
     try {
-        // PERBAIKAN: Path ke menu.php
         const response = await fetch('../../menu/menu.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                action: 'order',
-                menuId: productId,
-                quantity: currentQuantity
-            })
-        });
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',   // ⬅⬅⬅ FIX PALING PENTING
+        body: JSON.stringify({
+        action: 'order',
+        menuId: productId,
+        quantity: currentQuantity
+    })
+});
 
         const data = await response.json();
         console.log('Order response:', data);
@@ -105,6 +100,13 @@ async function sendOrderToBackend() {
         if (data.success) {
             return data;
         } else {
+            // FIXED: Check if user needs to login
+            if (data.needLogin) {
+                alert(data.message);
+                window.location.href = '../../login/login.html';
+                return null;
+            }
+            
             alert('Error: ' + data.message);
             return null;
         }
@@ -144,11 +146,9 @@ function displayProductDetails() {
     // Update category
     document.getElementById('categoryName').textContent = currentProduct.category;
     
-    // Update image - PERBAIKAN: Path dari order/detail/ ke menu/Gambar/
+    // Update image
     const imageContainer = document.getElementById('productImage');
     if (currentProduct.image) {
-        // Gambar path dari menu.php adalah 'Gambar/filename.jpg'
-        // Dari order/detail/ folder, kita perlu '../../menu/Gambar/filename.jpg'
         const imagePath = '../../menu/' + currentProduct.image;
         imageContainer.innerHTML = `<img src="${imagePath}" alt="${currentProduct.name}">`;
     } else {
@@ -266,10 +266,23 @@ async function orderNow() {
     const orderData = await sendOrderToBackend();
 
     if (orderData) {
-        alert(`Order berhasil!\n\nMenu: ${orderData.menuName}\nQuantity: ${orderData.quantity}\nTotal: ${orderData.formattedTotal}`);
+        // FIXED: Correct path to checkout
+        // From: order/detail/ 
+        // To: order/Proses/checkout.html
         
-        // Redirect to order confirmed page
-        window.location.href = `../oder/Proses/order-confirmed.html?orderId=${orderData.orderId}`;
+        // Store order data in sessionStorage for checkout page
+        sessionStorage.setItem('currentOrder', JSON.stringify({
+            orderId: orderData.orderId,
+            menuId: orderData.menuId,
+            menuName: orderData.menuName,
+            quantity: orderData.quantity,
+            price: orderData.price,
+            total: orderData.total,
+            formattedTotal: orderData.formattedTotal
+        }));
+        
+        // Redirect to checkout page
+        window.location.href = `../Proses/checkout.html?orderId=${orderData.orderId}`;
     } else {
         orderBtn.innerHTML = originalHTML;
         orderBtn.disabled = false;

@@ -4,6 +4,11 @@ include '../connection/connection.php';
 
 header('Content-Type: application/json');
 
+// Log request method
+error_log("=== MENU.PHP REQUEST ===");
+error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
+error_log("Content-Type: " . ($_SERVER['CONTENT_TYPE'] ?? 'not set'));
+
 // Function untuk menghitung total
 function calculateTotal($price, $quantity) {
     return $price * $quantity;
@@ -11,8 +16,14 @@ function calculateTotal($price, $quantity) {
 
 // Cek request method
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input = json_decode(file_get_contents('php://input'), true);
+    $rawInput = file_get_contents('php://input');
+    error_log("Raw POST Input: " . $rawInput);
+    
+    $input = json_decode($rawInput, true);
+    error_log("Decoded Input: " . print_r($input, true));
+    
     $action = isset($input['action']) ? $input['action'] : '';
+    error_log("Action: " . $action);
     
     // ACTION 1: Calculate Total
     if ($action === 'calculate') {
@@ -58,14 +69,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // ACTION 2: Insert Order
     elseif ($action === 'order') {
+        // Log untuk debugging
+        error_log("ORDER ACTION - Session ID: " . session_id());
+        error_log("ORDER ACTION - Session Data: " . print_r($_SESSION, true));
+        
         $menuId = isset($input['menuId']) ? (int)$input['menuId'] : 0;
         $quantity = isset($input['quantity']) ? (int)$input['quantity'] : 1;
         $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
         
+        error_log("ORDER ACTION - User ID: " . ($userId ?? 'NULL'));
+        error_log("ORDER ACTION - Menu ID: $menuId");
+        error_log("ORDER ACTION - Quantity: $quantity");
+        
         if ($menuId <= 0 || $quantity <= 0) {
             echo json_encode([
                 'success' => false,
-                'message' => 'Invalid menu ID or quantity'
+                'message' => 'Invalid menu ID or quantity',
+                'debug' => [
+                    'menuId' => $menuId,
+                    'quantity' => $quantity
+                ]
+            ]);
+            exit;
+        }
+        
+        // FIXED: Check if user is logged in
+        if ($userId === null || $userId === '' || $userId === 0) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'User tidak login. Silakan login terlebih dahulu.',
+                'needLogin' => true,
+                'debug' => [
+                    'sessionId' => session_id(),
+                    'userId' => $userId,
+                    'sessionData' => $_SESSION
+                ]
             ]);
             exit;
         }
@@ -82,28 +120,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $menuName = $row['Nama_Menu'];
             $total = calculateTotal($price, $quantity);
             
-            // Insert ke tabel orders (sesuaikan dengan struktur tabel Anda)
-            $insertQuery = "INSERT INTO pesanan (ID_User, ID_Menu, Jumlah_Pesanan, Harga, Total_Harga) 
+            // FIXED: Add Tanggal_Pesanan field
+            $currentDate = date('Y-m-d H:i:s');
+            
+            // Insert ke tabel pesanan dengan field yang lengkap
+            $insertQuery = "INSERT INTO pesanan (ID_User, ID_Menu, Jumlah_Pesanan, Total_Harga, Tanggal_Pesanan) 
                             VALUES (?, ?, ?, ?, ?)";
             $insertStmt = mysqli_prepare($conn, $insertQuery);
-            mysqli_stmt_bind_param($insertStmt, "iiiii", $userId, $menuId, $quantity, $price, $total);
+            mysqli_stmt_bind_param($insertStmt, "iiiis", $userId, $menuId, $quantity, $total, $currentDate);
             
             if (mysqli_stmt_execute($insertStmt)) {
+                $orderId = mysqli_insert_id($conn);
+                
+                error_log("ORDER SUCCESS - Order ID: $orderId");
+                
                 echo json_encode([
                     'success' => true,
                     'message' => 'Order berhasil ditambahkan',
-                    'orderId' => mysqli_insert_id($conn),
+                    'orderId' => $orderId,
                     'menuId' => $menuId,
                     'menuName' => $menuName,
                     'quantity' => $quantity,
                     'price' => $price,
                     'total' => $total,
-                    'formattedTotal' => 'Rp ' . number_format($total, 0, ',', '.')
+                    'formattedTotal' => 'Rp ' . number_format($total, 0, ',', '.'),
+                    'tanggalPesanan' => $currentDate
                 ]);
             } else {
+                $errorMsg = mysqli_error($conn);
+                error_log("ORDER ERROR - MySQL Error: $errorMsg");
+                
                 echo json_encode([
                     'success' => false,
-                    'message' => 'Gagal menambahkan order: ' . mysqli_error($conn)
+                    'message' => 'Gagal menambahkan order: ' . $errorMsg,
+                    'debug' => [
+                        'error' => $errorMsg,
+                        'userId' => $userId,
+                        'menuId' => $menuId,
+                        'quantity' => $quantity,
+                        'total' => $total
+                    ]
                 ]);
             }
         } else {
@@ -116,9 +172,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     else {
+        error_log("INVALID ACTION: " . $action);
         echo json_encode([
             'success' => false,
-            'message' => 'Invalid action'
+            'message' => 'Invalid action',
+            'receivedAction' => $action,
+            'receivedData' => $input,
+            'requestMethod' => $_SERVER['REQUEST_METHOD']
         ]);
         exit;
     }
