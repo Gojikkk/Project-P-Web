@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Order - Kopi Nusantara</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i> Kopi Nusantara
+            </div>
+            <ul class="nav-links">
+                <li><a href="../../index/index.html">Home</a></li>
+                <li><a href="../../menu/menu.html">Menu</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="../../user/login/login.html" class="login-btn">Login</a>
+                <a href="../../user/signin/register.html" class="signup-btn">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ALERT -->
+    <div id="alertContainer"></div>
+
+    <div class="container">
+
+        <!-- Back -->
+        <a href="../../menu/menu.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Menu
+        </a>
+
+        <div class="checkout-container">
+
+            <!-- ORDER FORM -->
+            <div class="order-form">
+                <h1 class="section-title">Complete Your Order</h1>
+
+                <!-- PERSONAL INFO -->
+                <div class="form-section">
+                    <h2 class="section-title">Personal Information</h2>
+
+                    <div class="form-group">
+                        <label class="form-label required">Full Name</label>
+                        <p><span id="checkout_username"></span></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Phone Number</label>
+                        <p><span id="checkout_phone"></span></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <p><span id="checkout_email"></span></p>
+                    </div>
+                </div>
+
+                <!-- Order Type -->
+                <div class="form-section">
+                    <h2 class="section-title">Order Type</h2>
+                    
+                    <div class="order-type-options">
+                        <div class="order-type-option" onclick="selectOrderType(this, 'dinein')">
+                            <div class="order-type-radio"></div>
+                            <div class="order-type-info">
+                                <div class="order-type-title">Dine In</div>
+                                <div class="order-type-desc">Eat at our place</div>
+                            </div>
+                        </div>
+
+                        <div class="order-type-option" onclick="selectOrderType(this, 'takeaway')">
+                            <div class="order-type-radio"></div>
+                            <div class="order-type-info">
+                                <div class="order-type-title">Take Away</div>
+                                <div class="order-type-desc">Pick up order</div>
+                            </div>
+                        </div>
+
+                        <div class="order-type-option" onclick="selectOrderType(this, 'delivery')">
+                            <div class="order-type-radio"></div>
+                            <div class="order-type-info">
+                                <div class="order-type-title">Delivery</div>
+                                <div class="order-type-desc">To your place</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Number (only for dine in) -->
+                    <div class="form-group" id="tableNumberGroup" style="display: none;">
+                        <label class="form-label required">Table Number</label>
+                        <input type="number" class="form-input" placeholder="Enter your table number" id="tableNumber">
+                        <div class="error-message" id="tableNumberError" >Please enter your table number</div>
+                    </div>
+                </div>
+
+                <!-- Delivery Address (only for delivery) -->
+                    <div class="form-group" id="deliveryGroup" style="display: none;">
+                        <label class="form-label required">Delivery Address</label>
+                        <input type="text" class="form-input" placeholder="Enter your delivery address" id="deliveryAddress">
+                        <div class="error-message" id="alamatPengantaran">Please enter your delivery address</div>
+                    </div>
+
+                <!-- Additional Notes -->
+                <div class="form-section">
+                    <h2 class="section-title">Additional Notes</h2>
+                    <div class="form-group">
+                        <textarea class="form-input textarea" placeholder="Any special request(s)? (e.g., less sugar, extra foam)" id="notes"></textarea>
+                    </div>
+                </div>
+
+                <!-- SUBMIT -->
+                <button class="continue-btn" id="btnSubmitOrder">
+                    Continue to Payment
+                </button>
+            </div>
+
+            <!-- SUMMARY -->
+            <div class="order-summary">
+                <h2 class="summary-title">Order Summary</h2>
+
+                <div class="order-items">
+
+                    <p style="font-size: 25px;"><strong id="menu_name"></strong></p>
+                    <p>Qty: <span id="menu_qty"></span></p>
+                    <p>Price: <span id="menu_price"></span></p>
+                    <p>Subtotal: <span id="menu_total"></span></p>
+                    <p>Tax: <span id="Service_Fee"></span></p>
+                    <p>Total: <span id="Grand_Total"></span></p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="checkout-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi Nusantara</h3>
+                <p>Bringing you the finest Indonesian coffee experience since 2020.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="../../index/index.html">Home</a></li>
+                    <li><a href="../../menu/menu.html">Menu</a></li>
+                    <li><a href="../../user/login/login.html">Login</a></li>
+                    <li><a href="../../user/signin/register.html">Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi Nusantara</p>
+        </div>
+    </div>
+
+    <script src="script-checkout.js"></script>
+</body>
+</html>

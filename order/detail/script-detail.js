@@ -49,7 +49,6 @@ async function calculateTotalFromBackend() {
     }
 
     try {
-        // PERBAIKAN: Path ke menu.php
         const response = await fetch('detail.php', {
             method: 'POST',
             headers: {
@@ -77,50 +76,6 @@ async function calculateTotalFromBackend() {
     }
 }
 
-// Send order to backend
-async function sendOrderToBackend() {
-    if (!productId) {
-        alert('Product ID tidak valid');
-        return null;
-    }
-
-    try {
-        // PERBAIKAN: Path ke menu.php
-        const response = await fetch('detail.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                action: 'order',
-                menuId: productId,
-                quantity: currentQuantity
-            })
-        });
-
-        const data = await response.json();
-        console.log('Order response:', data);
-
-        if (data.success) {
-            return data;
-        } else {
-            // FIXED: Check if user needs to login
-            if (data.needLogin) {
-                alert(data.message);
-                window.location.href = '../../login/login.html';
-                return null;
-            }
-            
-            alert('Error: ' + data.message);
-            return null;
-        }
-    } catch (error) {
-        console.error('Error creating order:', error);
-        alert('Terjadi kesalahan saat membuat order. Silakan coba lagi.');
-        return null;
-    }
-}
-
 // ====================================
 // UI UPDATE FUNCTIONS
 // ====================================
@@ -138,19 +93,11 @@ function displayProductDetails() {
 
     console.log('Displaying product:', currentProduct);
 
-    // Update title
     document.getElementById('productTitle').textContent = currentProduct.name;
-    
-    // Update description
     document.getElementById('productDescription').textContent = currentProduct.description;
-    
-    // Update price
     document.getElementById('productPrice').textContent = formatPrice(currentProduct.price);
-    
-    // Update category
     document.getElementById('categoryName').textContent = currentProduct.category;
     
-    // Update image
     const imageContainer = document.getElementById('productImage');
     if (currentProduct.image) {
         const imagePath = '../../menu/' + currentProduct.image;
@@ -159,15 +106,11 @@ function displayProductDetails() {
         imageContainer.innerHTML = '<i class="fas fa-mug-hot"></i>';
     }
 
-    // Show popular badge if applicable
     if (currentProduct.popular) {
         document.getElementById('popularBadge').style.display = 'flex';
     }
 
-    // Set initial quantity
     document.getElementById('quantity').value = currentQuantity;
-    
-    // Update total
     updateTotalLocal();
 }
 
@@ -175,12 +118,10 @@ function displayProductDetails() {
 function loadRecommendations() {
     if (!currentProduct || allMenuItems.length === 0) return;
 
-    // Filter recommendations: same category, different product
     let recommendations = allMenuItems.filter(item => 
         item.id !== productId && item.category === currentProduct.category
     ).slice(0, 3);
 
-    // If not enough, add different category items
     if (recommendations.length < 3) {
         const additionalItems = allMenuItems.filter(item => 
             item.id !== productId && !recommendations.includes(item)
@@ -223,10 +164,7 @@ async function loadProductDetails() {
         return;
     }
 
-    // Load all menu items
     await loadAllMenuItems();
-    
-    // Find current product
     currentProduct = allMenuItems.find(item => item.id === productId);
     
     console.log('Current product found:', currentProduct);
@@ -237,10 +175,7 @@ async function loadProductDetails() {
         return;
     }
 
-    // Display product details
     displayProductDetails();
-    
-    // Load recommendations
     loadRecommendations();
 }
 
@@ -260,25 +195,73 @@ function decreaseQty() {
     }
 }
 
-// Order now
+// Order now - SIMPAN DATA SEMENTARA, BELUM KE DATABASE
 async function orderNow() {
+    if (!currentProduct || !productId) {
+        alert('Data produk tidak valid');
+        return;
+    }
+
     const orderBtn = document.getElementById('orderBtn');
     const originalHTML = orderBtn.innerHTML;
     orderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
     orderBtn.disabled = true;
 
-    const orderData = await sendOrderToBackend();
+    try {
+        // Harga asli
+        const total = currentProduct.price * currentQuantity;
 
-    if (orderData) {
-        alert(`Order berhasil!\n\nMenu: ${orderData.menuName}\nQuantity: ${orderData.quantity}\nTotal: ${orderData.formattedTotal}`);
-        
-        // Redirect to order confirmed page
-        window.location.href = `../Proses/order-confirmed.html?orderId=${orderData.orderId}`;
-    } else {
+        // SERVICE FEE
+        const serviceFee = 5000;
+
+        // GRAND TOTAL (harga + service fee)
+        const grandTotal = total + serviceFee;
+
+        // Data order lengkap
+        const orderData = {
+            menuId: productId,
+            menuName: currentProduct.name,
+            menuImage: currentProduct.image,
+            menuCategory: currentProduct.category,
+            price: currentProduct.price,
+            quantity: currentQuantity,
+
+            // total asli
+            total: total,
+
+            // fee + total akhir
+            serviceFee: serviceFee,
+            grandTotal: grandTotal,
+
+            formattedPrice: formatPrice(currentProduct.price),
+            formattedTotal: formatPrice(total),
+
+            formattedServiceFee: formatPrice(serviceFee),
+            formattedGrandTotal: formatPrice(grandTotal),
+
+            timestamp: new Date().toISOString()
+        };
+
+        // SIMPAN KE SESSION STORAGE
+        sessionStorage.setItem('pendingOrder', JSON.stringify(orderData));
+        sessionStorage.setItem('serviceFee', serviceFee);
+        sessionStorage.setItem('grandTotal', grandTotal);
+
+        console.log('Order + service fee saved:', orderData);
+
+        // Pindah ke checkout
+        setTimeout(() => {
+            window.location.href = `../checkout/checkout.html`;
+        }, 500);
+
+    } catch (error) {
+        console.error('Error preparing order:', error);
+        alert('Terjadi kesalahan. Silakan coba lagi.');
         orderBtn.innerHTML = originalHTML;
         orderBtn.disabled = false;
     }
 }
+
 
 // Navigate to product
 function goToProduct(id) {
@@ -289,18 +272,15 @@ function goToProduct(id) {
 // EVENT LISTENERS
 // ====================================
 
-// Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing...');
     loadProductDetails();
     
-    // Add event listeners
     document.getElementById('increaseBtn').addEventListener('click', increaseQty);
     document.getElementById('decreaseBtn').addEventListener('click', decreaseQty);
     document.getElementById('orderBtn').addEventListener('click', orderNow);
 });
 
-// Handle keyboard shortcuts
 document.addEventListener('keydown', function(event) {
     if (event.key === '+' || event.key === '=') {
         event.preventDefault();
@@ -318,5 +298,4 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// Export for onclick
 window.goToProduct = goToProduct;
