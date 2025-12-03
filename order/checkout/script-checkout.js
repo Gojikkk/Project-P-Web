@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (result.success) {
 
                 const orderData = {
+                menuId: order.menuId,
                 menuName: order.menuName,
                 quantity: order.quantity,
                 grandTotal: grandTotal,
