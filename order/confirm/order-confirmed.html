@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Confirmed - Kopi Nusantara</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="../../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -36,43 +36,39 @@
             <p class="confirmation-subtitle">Thank you for your order, <span id="customerName">Customer</span>!</p>
             
             <div class="order-number" id="orderNumber">
-                Order #PEHQIRTN
+
             </div>
 
             <div class="order-details">
                 <div class="detail-section">
-                    <h3>Order Details</h3>
+                    <h3>Order Detail</h3>
                     <div id="orderItems">
                         <!-- Order items will be populated by JavaScript -->
                     </div>
-                </div>
-
-                <div class="detail-section">
-                    <h3>Order Information</h3>
                     <div class="detail-item">
                         <span class="detail-label">Order Type:</span>
-                        <span class="detail-value" id="orderType">Take Away</span>
+                        <span class="detail-value" id="orderType"></span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Payment Method:</span>
-                        <span class="detail-value" id="paymentMethod">Gopay</span>
+                        <span class="detail-value" id="paymentMethod"></span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Order Date:</span>
-                        <span class="detail-value" id="orderDate">Just now</span>
+                        <span class="detail-value" id="orderDate"></span>
                     </div>
                     <div class="detail-item" style="border-bottom: none;">
                         <span class="detail-label">Total:</span>
-                        <span class="detail-value" id="orderTotal">Rp 0</span>
+                        <span class="detail-value" id="orderTotal"></span>
                     </div>
                 </div>
             </div>
 
             <div class="action-buttons">
-                <a href="menu.html" class="btn btn-primary">
+                <a href="../../menu/menu.html" class="btn btn-primary">
                     <i class="fas fa-shopping-bag"></i> Order More
                 </a>
-                <a href="index.html" class="btn btn-secondary">
+                <a href="../../index/index.html" class="btn btn-secondary">
                     <i class="fas fa-home"></i> Back to Home
                 </a>
             </div>
@@ -127,3 +123,47 @@
             <p>&copy; 2025 Kopi Nusantara. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        let data = sessionStorage.getItem("orderData");
+        if (!data) return;
+
+        data = JSON.parse(data);
+
+        // Update Order Number
+        document.getElementById("orderNumber").textContent = "Order #" + data.pesanan_id;
+
+        // Update Nama Customer
+        document.getElementById("customerName").textContent = data.customer_name || "Customer";
+
+        // Update Order Type
+        document.getElementById("orderType").textContent = data.order_type;
+
+        // Update Payment Method
+        document.getElementById("paymentMethod").textContent = data.payment_method;
+
+        // Update Order Date
+        document.getElementById("orderDate").textContent = data.order_date;
+
+        // Update Total
+        document.getElementById("orderTotal").textContent = "Rp " + data.total.toLocaleString();
+
+        // Update Item Pesanan
+        const container = document.getElementById("orderItems");
+        container.innerHTML = "";
+
+        data.items.forEach(item => {
+            const div = document.createElement("div");
+            div.classList.add("order-item");
+            div.innerHTML = `
+                <p><strong>${item.nama}</strong> x${item.qty}</p>
+                <p>Rp ${(item.subtotal).toLocaleString()}</p>
+            `;
+            container.appendChild(div);
+        });
+    });
+    </script>
+</body>
+</html>

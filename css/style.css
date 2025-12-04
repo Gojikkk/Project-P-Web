@@ -2155,8 +2155,8 @@ body {
 
         /* Order Details */
         .order-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex !important;
+            flex-direction: column !important;
             gap: 30px;
             margin-bottom: 30px;
             text-align: left;
@@ -2168,12 +2168,12 @@ body {
             border-radius: 15px;
         }
 
-        .detail-section h3 {
+        /*.detail-section h3 {
             font-family: 'Playfair Display', serif;
             color: var(--color-text);
             margin-bottom: 15px;
             font-size: 1.3em;
-        }
+        }*/
 
         .detail-item {
             display: flex;
@@ -2791,5 +2791,5 @@ footer .container {
 
 /* Smooth scroll behavior */
 html {
-    scroll;
+    scroll-behavior: smooth;
 }

@@ -162,6 +162,31 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Parsed result:", result);
 
             if (result.success) {
+                // === SIMPAN DATA ORDER KE SESSION ===============
+    const orderData = {
+        pesanan_id: result.pesanan_id,
+
+        customer_name: userData.Username,
+        order_type: orderType,
+        payment_method: selectedPaymentMethod,
+        order_date: new Date().toLocaleString("id-ID"),
+        total: total,
+
+        // Barang pesanan
+        items: order.items && order.items.length > 0
+            ? order.items.map(i => ({
+                nama: i.name,
+                qty: i.quantity,
+                subtotal: i.price * i.quantity
+            }))
+            : [{
+                nama: order.menuName,
+                qty: quantity,
+                subtotal: price * quantity
+            }]
+    };
+
+    sessionStorage.setItem("orderData", JSON.stringify(orderData));
                 sessionStorage.removeItem("orderSummary");
                 sessionStorage.removeItem("pendingOrder");
                 window.location.href = "../confirm/order-confirmed.html";
