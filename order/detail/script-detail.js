@@ -262,6 +262,7 @@ async function orderNow() {
     // SIMPAN KE SESSION STORAGE
     sessionStorage.setItem("pendingOrder", JSON.stringify(orderData));
     sessionStorage.setItem("serviceFee", serviceFee);
+    sessionStorage.setItem("total", total);
     sessionStorage.setItem("grandTotal", grandTotal);
 
     console.log("Order + service fee saved:", orderData);

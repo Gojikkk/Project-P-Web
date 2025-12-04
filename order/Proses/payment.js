@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    const order = JSON.parse(sessionStorage.getItem("orderSummary"));
+    const order = JSON.parse(sessionStorage.getItem("pendingOrder"));
     if (!order) {
         alert("Tidak ada data order, silakan checkout terlebih dahulu!");
         window.location.href = "../../order/checkout/checkout.html";
@@ -42,11 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     <span class="item-name">${item.name}</span>
                     <span class="item-qty">Qty: ${item.quantity}</span>
                 </div>
-                <div class="item-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+                <div class="item-price">Rp ${item.total.toLocaleString('id-ID')}</div>
             </div>
         `).join('');
     } else {
-        const price = order.price ?? grandTotal;
+        const price = order.total ?? grandTotal;
         orderItems.innerHTML = `
             <div class="order-item">
                 <div class="item-info">
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Update totals
-    document.getElementById("subtotal").textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+    document.getElementById("total").textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
     document.getElementById("serviceFee").textContent = `Rp ${serviceFee.toLocaleString('id-ID')}`;
     document.getElementById("grandTotal").textContent = `Rp ${grandTotal.toLocaleString('id-ID')}`;
     document.getElementById("payAmount").textContent = `Rp ${grandTotal.toLocaleString('id-ID')}`;
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData();
         formData.append("menu_id", menu_id);
         formData.append("quantity", quantity);
-        formData.append("price", price);
+        formData.append("tota", price);
         formData.append("total", total);
         formData.append("service_fee", serviceFee);
         formData.append("payment_methode", selectedPaymentMethod);
@@ -172,23 +172,22 @@ document.addEventListener("DOMContentLoaded", () => {
         order_date: new Date().toLocaleString("id-ID"),
         total: total,
 
-        // Barang pesanan
+        // === ITEM PESANAN ===
         items: order.items && order.items.length > 0
             ? order.items.map(i => ({
                 nama: i.name,
                 qty: i.quantity,
-                subtotal: i.price * i.quantity
+                subtotal: i.total
             }))
             : [{
                 nama: order.menuName,
                 qty: quantity,
-                subtotal: price * quantity
+                subtotal: total
             }]
     };
 
     sessionStorage.setItem("orderData", JSON.stringify(orderData));
                 sessionStorage.removeItem("orderSummary");
-                sessionStorage.removeItem("pendingOrder");
                 window.location.href = "../confirm/order-confirmed.html";
             } else {
                 alert("Error: " + result.message);

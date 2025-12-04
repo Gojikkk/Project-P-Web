@@ -16,12 +16,12 @@
                 <i class="fas fa-mug-hot"></i> Kopi Nusantara
             </div>
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="menu.html">Menu</a></li>
+                <li><a href="../../index/index.html">Home</a></li>
+                <li><a href="../../menu/menu.html">Menu</a></li>
             </ul>
             <div class="auth-buttons">
-                <a href="login.html" class="login-btn">Login</a>
-                <a href="register.html" class="signup-btn">Sign Up</a>
+                <a href="../../user/login/login.html" class="login-btn">Login</a>
+                <a href="../../user/signin/register.html" class="signup-btn">Sign Up</a>
             </div>
         </div>
     </nav>
@@ -92,10 +92,10 @@
             <div class="footer-section">
                 <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="menu.html">Menu</a></li>
-                    <li><a href="login.html">Login</a></li>
-                    <li><a href="register.html">Sign Up</a></li>
+                    <li><a href="../../index/index.html">Home</a></li>
+                    <li><a href="../../menu/menu.html">Menu</a></li>
+                    <li><a href="../../user/login/login.html">Login</a></li>
+                    <li><a href="../../user/signin/register.html">Sign Up</a></li>
                 </ul>
             </div>
 
@@ -125,45 +125,44 @@
     </footer>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
 
-        let data = sessionStorage.getItem("orderData");
-        if (!data) return;
+    let orderData = JSON.parse(sessionStorage.getItem("orderData")) || {};
+    let pending = JSON.parse(sessionStorage.getItem("pendingOrder")) || null;
 
-        data = JSON.parse(data);
+    // ------ Update orderData ------
+    document.getElementById("orderNumber").textContent =
+        "Order #" + (orderData.pesanan_id || "-");
 
-        // Update Order Number
-        document.getElementById("orderNumber").textContent = "Order #" + data.pesanan_id;
+    document.getElementById("customerName").textContent =
+        orderData.customer_name || "Customer";
 
-        // Update Nama Customer
-        document.getElementById("customerName").textContent = data.customer_name || "Customer";
+    document.getElementById("orderType").textContent =
+        orderData.order_type || "-";
 
-        // Update Order Type
-        document.getElementById("orderType").textContent = data.order_type;
+    document.getElementById("paymentMethod").textContent =
+        orderData.payment_method || "-";
 
-        // Update Payment Method
-        document.getElementById("paymentMethod").textContent = data.payment_method;
+    document.getElementById("orderDate").textContent =
+        orderData.order_date || "-";
 
-        // Update Order Date
-        document.getElementById("orderDate").textContent = data.order_date;
+    document.getElementById("orderTotal").textContent =
+        "Rp " + Number(orderData.total || 0).toLocaleString("id-ID");
 
-        // Update Total
-        document.getElementById("orderTotal").textContent = "Rp " + data.total.toLocaleString();
+    // ------ Update pendingOrder (1 item) ------
+    const container = document.getElementById("orderItems");
+    container.innerHTML = "";
 
-        // Update Item Pesanan
-        const container = document.getElementById("orderItems");
-        container.innerHTML = "";
+    if (pending) {
+        const div = document.createElement("div");
+        div.classList.add("order-item");
+        div.innerHTML = `
+            <p><strong>${pending.menuName}</strong> x${pending.quantity}</p>
+            <p>Rp ${Number(pending.total).toLocaleString("id-ID")}</p>
+        `;
+        container.appendChild(div);
+    }
 
-        data.items.forEach(item => {
-            const div = document.createElement("div");
-            div.classList.add("order-item");
-            div.innerHTML = `
-                <p><strong>${item.nama}</strong> x${item.qty}</p>
-                <p>Rp ${(item.subtotal).toLocaleString()}</p>
-            `;
-            container.appendChild(div);
-        });
-    });
-    </script>
-</body>
-</html>
+});
+
+</script>
